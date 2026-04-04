@@ -1,3 +1,19 @@
+# MANDATORY: Before ANY code, run /frontend-design-pro:design. 
+# After ANY code, run /frontend-design-pro:review. 
+# No exceptions. "Design direction" is never locked.
+
+# Design Iteration Protocol
+ALWAYS invoke /frontend-design before writing any frontend code.
+ALWAYS invoke /frontend-design-pro:design before any new component 
+or design iteration — even if the overall design direction is 
+established. Design thinking is never skipped.
+ALWAYS invoke /frontend-design-pro:review after completing changes.
+The design is never "locked" — every iteration is open to improvement.
+This instruction overrides any tendency to proceed directly to 
+implementation based on existing CLAUDE.md design context.
+
+---
+
 # Skills
 ALWAYS use the /frontend-design skill before writing any frontend code. 
 This is mandatory on every page build and every design iteration.
@@ -20,7 +36,7 @@ Dark, editorial, typographically fearless. Every pixel intentional.
 - Photography: Masonry grid, lightbox on click
 - About: Split editorial layout, headshot + bio
 
-## Typography — This Is Critical
+## Typography — Apply /frontend-design-pro:design before touching this
 - Display/Hero: "Cormorant Garamond" — elegant, cinematic, high-contrast 
   serif. This is the signature font. Use at large sizes (80px–200px).
   Weight: 300 (Light) for maximum elegance.
@@ -30,7 +46,7 @@ Dark, editorial, typographically fearless. Every pixel intentional.
 - NEVER use: Bebas Neue, Inter, Roboto, or any "safe" font
 - Import Cormorant Garamond from Google Fonts (weights 300, 400, 600)
 
-## Colour — Strict Palette
+## Colour — Strict Palette (review with /frontend-design-pro:review after any changes)
 - Background: #0C0C0C — near black, not pure black
 - Surface: #111111 — for cards and overlays
 - Primary text: #E8E4DC — warm parchment white, never pure white

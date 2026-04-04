@@ -82,7 +82,7 @@ function HUDItem({
       <span
         style={{
           fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-          fontSize: "10px",
+          fontSize: "9px",
           fontWeight: 400,
           color: highlight ? "rgba(255,180,0,0.9)" : "rgba(255,255,255,0.6)",
           letterSpacing: "0.08em",
@@ -95,7 +95,7 @@ function HUDItem({
       <span
         style={{
           fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-          fontSize: "13px",
+          fontSize: "11px",
           fontWeight: 600,
           color: highlight ? "rgba(255,200,0,1.0)" : "rgba(255,255,255,1.0)",
           letterSpacing: "0.06em",
@@ -184,17 +184,16 @@ function ArriHUD({
         zIndex: 100,
       }}
     >
-      {/* ── TOP BAR — space-between mirrors bottom bar; FALSE COLOUR pulled out of flex ── */}
+      {/* ── TOP BAR — desktop: 28px (above nav, 0–52px zone); mobile: FPS only ── */}
       <div
         style={{
           position: "absolute",
-          top: "16px",
+          top: "28px",
           left: 0,
           right: 0,
           padding: "0 24px",
         }}
       >
-        {/* position: relative so FALSE COLOUR absolute is contained here */}
         <div
           style={{
             position: "relative",
@@ -203,14 +202,22 @@ function ArriHUD({
             alignItems: "center",
           }}
         >
-          <HUDItem label="FPS" value="24.000" />
-          <HUDItem label="SHUTTER" value="172.8" />
-          <HUDItem label="IRIS" value="T 2.8  0/10" />
-          <HUDItem label="EI" value="800" />
-          <HUDItem label="ND" value="0.6" />
-          <HUDItem label="WB" value="5600K +0.0" />
+          {/* Desktop: all 6 items */}
+          <span className="hud-desktop-only" style={{ display: "contents" }}>
+            <HUDItem label="FPS" value="24.000" />
+            <HUDItem label="SHUTTER" value="172.8" />
+            <HUDItem label="IRIS" value="T 2.8  0/10" />
+            <HUDItem label="EI" value="800" />
+            <HUDItem label="ND" value="0.6" />
+            <HUDItem label="WB" value="5600K +0.0" />
+          </span>
 
-          {/* FALSE COLOUR — out of flex flow entirely, midpoint between top bar and frameline */}
+          {/* Mobile: FPS only */}
+          <span className="hud-mobile-only">
+            <HUDItem label="FPS" value="24.000" />
+          </span>
+
+          {/* FALSE COLOUR — absolute centre */}
           <div
             style={{
               position: "absolute",
@@ -234,8 +241,9 @@ function ArriHUD({
         </div>
       </div>
 
-      {/* ── TOP-LEFT CORNER pills — Group 1: EVF header + LOG pill ── */}
+      {/* ── TOP-LEFT CORNER pills — desktop only ── */}
       <div
+        className="hud-desktop-only"
         style={{
           position: "absolute",
           top: "calc(10vh + 24px)",
@@ -249,8 +257,8 @@ function ArriHUD({
         <Pill>LOG</Pill>
       </div>
 
-      {/* ── TOP-LEFT CORNER pills — Group 2: CAM header + 4K/RAW/K447 pills ── */}
       <div
+        className="hud-desktop-only"
         style={{
           position: "absolute",
           top: "50vh",
@@ -267,11 +275,11 @@ function ArriHUD({
         <Pill>REC709</Pill>
       </div>
 
-      {/* ── BOTTOM BAR ── */}
+      {/* ── BOTTOM BAR — desktop: 5vh from bottom; mobile: TC + REC + PWR ── */}
       <div
         style={{
           position: "absolute",
-          bottom: "14px",
+          bottom: "5vh",
           left: 0,
           right: 0,
           padding: "0 24px",
@@ -280,11 +288,19 @@ function ArriHUD({
           alignItems: "center",
         }}
       >
-        <HUDItem label="FCL" value="47.0mm" />
-        <HUDItem label="PWR" value={`${pwr}V`} />
-        <HUDItem label="" value="A_0004  C001" />
+        {/* Desktop bottom bar items */}
+        <span className="hud-desktop-only" style={{ display: "contents" }}>
+          <HUDItem label="FCL" value="47.0mm" />
+          <HUDItem label="PWR" value={`${pwr}V`} />
+          <HUDItem label="" value="A_0004  C001" />
+        </span>
 
-        {/* STBY / REC indicator */}
+        {/* Mobile bottom bar: TC left, REC centre, PWR right */}
+        <span className="hud-mobile-bottom">
+          <HUDItem label="TC" value={tc} highlight={falseColour} />
+        </span>
+
+        {/* STBY / REC indicator — desktop + mobile centre */}
         <div
           style={{
             display: "flex",
@@ -319,19 +335,22 @@ function ArriHUD({
           </span>
         </div>
 
-        <HUDItem label="MEDIA" value="0:21h" />
+        <span className="hud-desktop-only" style={{ display: "contents" }}>
+          <HUDItem label="MEDIA" value="0:21h" />
 
-        {/* TC — clickable for false colour */}
-        <div
-          onClick={onTCClick}
-          style={{ pointerEvents: "all", cursor: "none" }}
-        >
-          <HUDItem
-            label="TC"
-            value={tc}
-            highlight={falseColour}
-          />
-        </div>
+          {/* TC — clickable for false colour */}
+          <div
+            onClick={onTCClick}
+            style={{ pointerEvents: "all", cursor: "none" }}
+          >
+            <HUDItem label="TC" value={tc} highlight={falseColour} />
+          </div>
+        </span>
+
+        {/* Mobile: PWR right */}
+        <span className="hud-mobile-bottom">
+          <HUDItem label="PWR" value={`${pwr}V`} />
+        </span>
       </div>
     </motion.div>
   );
@@ -658,9 +677,13 @@ export default function Home() {
         }
         .frameline-top { top: 10vh; }
         .frameline-bottom { bottom: 10vh; }
+        /* Desktop shows all HUD items; mobile shows only the simplified ones */
+        .hud-mobile-only { display: none; }
+        .hud-mobile-bottom { display: none; }
         @media (max-width: 767px) {
-          .frameline { display: none; }
-          .arri-hud { display: none; }
+          .hud-desktop-only { display: none !important; }
+          .hud-mobile-only { display: inline; }
+          .hud-mobile-bottom { display: inline; }
         }
       `}</style>
     </main>

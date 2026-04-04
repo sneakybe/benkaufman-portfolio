@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -317,6 +317,74 @@ function Lightbox({
   );
 }
 
+// ─── JS Masonry grid — left-to-right flow ────────────────────────────────────
+function MasonryGrid({ children }: { children: React.ReactNode[] }) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cols, setCols] = useState(3);
+
+  useEffect(() => {
+    const updateCols = () => {
+      const w = window.innerWidth;
+      setCols(w <= 640 ? 1 : w <= 1024 ? 2 : 3);
+    };
+    updateCols();
+    window.addEventListener("resize", updateCols);
+    return () => window.removeEventListener("resize", updateCols);
+  }, []);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const layout = () => {
+      const items = Array.from(grid.children) as HTMLElement[];
+      const colHeights = Array(cols).fill(0);
+      const colWidth = grid.offsetWidth / cols;
+
+      items.forEach((item) => {
+        // Find shortest column
+        const minH = Math.min(...colHeights);
+        const col = colHeights.indexOf(minH);
+
+        item.style.position = "absolute";
+        item.style.width = `${colWidth}px`;
+        item.style.left = `${col * colWidth}px`;
+        item.style.top = `${colH(colHeights)}px`;
+
+        colHeights[col] += item.offsetHeight;
+      });
+
+      grid.style.height = `${Math.max(...colHeights)}px`;
+    };
+
+    // Run after images load
+    const imgs = Array.from(grid.querySelectorAll<HTMLImageElement>("img"));
+    let loaded = 0;
+    const onLoad = () => {
+      loaded++;
+      layout();
+    };
+    imgs.forEach((img) => {
+      if (img.complete) { loaded++; } else { img.addEventListener("load", onLoad); }
+    });
+    layout();
+
+    const ro = new ResizeObserver(layout);
+    ro.observe(grid);
+    return () => { ro.disconnect(); imgs.forEach((img) => img.removeEventListener("load", onLoad)); };
+  }, [cols, children]);
+
+  return (
+    <div ref={gridRef} style={{ position: "relative", width: "100%" }}>
+      {children}
+    </div>
+  );
+}
+
+function colH(arr: number[]) {
+  return Math.min(...arr);
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function PhotographyPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -346,8 +414,7 @@ export default function PhotographyPage() {
           minHeight: "100vh",
         }}
       >
-        {/* CSS columns — true masonry, preserves natural image heights */}
-        <div className="photo-columns">
+        <MasonryGrid>
           {photos.map((photo, i) => (
             <PhotoCard
               key={photo.src}
@@ -356,7 +423,7 @@ export default function PhotographyPage() {
               onClick={() => setLightboxIndex(i)}
             />
           ))}
-        </div>
+        </MasonryGrid>
       </div>
 
       <AnimatePresence>
@@ -370,23 +437,6 @@ export default function PhotographyPage() {
           />
         )}
       </AnimatePresence>
-
-      <style>{`
-        .photo-columns {
-          columns: 3;
-          column-gap: 0;
-        }
-        .photo-columns > * {
-          break-inside: avoid;
-          display: block;
-        }
-        @media (max-width: 1024px) {
-          .photo-columns { columns: 2; }
-        }
-        @media (max-width: 640px) {
-          .photo-columns { columns: 1; }
-        }
-      `}</style>
     </>
   );
 }

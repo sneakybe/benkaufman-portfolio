@@ -107,18 +107,18 @@ export default function AboutPage() {
     <main
       style={{
         background: "#0C0C0C",
-        height: "100vh",
-        overflow: "hidden",
+        minHeight: "100vh",
         display: "flex",
         alignItems: "stretch",
       }}
+      className="about-main"
     >
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           width: "100%",
-          height: "100vh",
+          minHeight: "100vh",
         }}
         className="about-grid"
       >
@@ -128,9 +128,9 @@ export default function AboutPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeOut" }}
           data-cursor="headshot"
+          className="about-headshot"
           style={{
             position: "relative",
-            height: "100vh",
             overflow: "hidden",
           }}
         >
@@ -171,7 +171,7 @@ export default function AboutPage() {
             flexDirection: "column",
             justifyContent: "center",
             gap: "44px",
-            height: "100vh",
+            minHeight: "100vh",
             overflowY: "auto",
           }}
           className="about-content"
@@ -266,15 +266,22 @@ export default function AboutPage() {
       </div>
 
       <style>{`
+        .about-headshot { height: 100vh; }
         @media (max-width: 768px) {
+          .about-main { overflow-y: auto; }
           .about-grid {
             grid-template-columns: 1fr !important;
-            height: auto !important;
+            min-height: auto !important;
+          }
+          .about-headshot {
+            height: 60vh !important;
+            min-height: 0 !important;
           }
           .about-content {
-            padding: 60px 32px !important;
-            padding-top: 80px !important;
+            padding: 48px 24px 60px !important;
             height: auto !important;
+            overflow-y: visible !important;
+            justify-content: flex-start !important;
           }
         }
       `}</style>
