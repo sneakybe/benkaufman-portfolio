@@ -109,6 +109,26 @@ function HUDItem({
   );
 }
 
+// ─── IRIS aspect ratio helpers ───────────────────────────────────────────────
+const IRIS_RATIOS = ["16:9", "2.39:1", "1.85:1"] as const;
+type IrisRatio = (typeof IRIS_RATIOS)[number];
+
+function getClipPath(ratio: IrisRatio, containerW: number, containerH: number): string {
+  if (ratio === "16:9") return "inset(0% 0%)";
+  const targetAR = ratio === "2.39:1" ? 2.39 : 1.85;
+  const contentH = containerW / targetAR;
+  if (contentH <= containerH) {
+    // Letterbox: symmetric bars top + bottom
+    const barPct = (((containerH - contentH) / 2 / containerH) * 100).toFixed(3);
+    return `inset(${barPct}% 0px round 0px)`;
+  } else {
+    // Pillarbox: symmetric bars left + right (e.g. 1.85:1 on wide viewport)
+    const contentW = containerH * targetAR;
+    const barPct = (((containerW - contentW) / 2 / containerW) * 100).toFixed(3);
+    return `inset(0px ${barPct}% round 0px)`;
+  }
+}
+
 // ─── ARRI Alexa HUD ──────────────────────────────────────────────────────────
 // TC starts at 01:07:23:00 — a realistic mid-shoot position
 const TC_START_FRAMES =
@@ -120,10 +140,14 @@ function ArriHUD({
   visible,
   falseColour,
   onTCClick,
+  irisRatio,
+  onIrisClick,
 }: {
   visible: boolean;
   falseColour: boolean;
   onTCClick: () => void;
+  irisRatio: IrisRatio;
+  onIrisClick: (e: React.MouseEvent) => void;
 }) {
   const [frames, setFrames] = useState(TC_START_FRAMES);
   const [isRec, setIsRec] = useState(false);
@@ -132,6 +156,12 @@ function ArriHUD({
   const pwrRef = useRef(16.8);
   const [shutterDisplay, setShutterDisplay] = useState(172.8);
   const shutterRef = useRef(172.8);
+  const [irisHover, setIrisHover] = useState(false);
+
+  const irisLabel =
+    irisRatio === "2.39:1" ? "T 2.39  SCOPE" :
+    irisRatio === "1.85:1" ? "T 1.85  FLAT"  :
+    "T 2.8  0/10";
 
   // Live timecode via RAF
   useEffect(() => {
@@ -256,11 +286,26 @@ function ArriHUD({
             alignItems: "center",
           }}
         >
-          {/* Desktop: all 6 items */}
+          {/* Desktop: all items */}
           <span className="hud-desktop-only" style={{ display: "contents" }}>
             <HUDItem label="FPS" value="24.000" />
             <HUDItem label="SHUTTER" value={String(shutterDisplay)} />
-            <HUDItem label="IRIS" value="T 2.8  0/10" />
+            <div
+              onClick={onIrisClick}
+              onMouseEnter={() => setIrisHover(true)}
+              onMouseLeave={() => setIrisHover(false)}
+              style={{
+                pointerEvents: "all",
+                cursor: "none",
+                opacity: irisHover ? 1 : 0.7,
+                transition: "opacity 200ms ease",
+              }}
+            >
+              <HUDItem label="IRIS" value={irisLabel} />
+            </div>
+            {irisRatio !== "16:9" && (
+              <HUDItem label="AR" value={irisRatio} highlight />
+            )}
             <HUDItem label="EI" value="800" />
             <HUDItem label="ND" value="0.6" />
             <HUDItem label="WB" value="5600K +0.0" />
@@ -738,6 +783,64 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ─── QUIET ON SET idle overlay ────────────────────────────────────────────────
+function QuietOnSet() {
+  return (
+    <motion.div
+      className="quiet-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.3 } }}
+      transition={{ duration: 1.2 }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9998,
+        background: "rgba(0,0,0,0.92)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "28px",
+        pointerEvents: "none",
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
+        style={{
+          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontWeight: 300,
+          fontSize: "clamp(32px, 5vw, 64px)",
+          letterSpacing: "0.12em",
+          color: "#E8E4DC",
+          textTransform: "uppercase",
+          userSelect: "none",
+        }}
+      >
+        Quiet on Set
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.6 }}
+        style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: "9px",
+          letterSpacing: "0.4em",
+          color: "#E8E4DC",
+          textTransform: "uppercase",
+          userSelect: "none",
+          animation: "quietPulse 2.4s ease-in-out infinite",
+        }}
+      >
+        [ ANY KEY TO CONTINUE ]
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const shouldReduceMotion = useReducedMotion();
@@ -746,9 +849,13 @@ export default function Home() {
   const [falseColour, setFalseColour] = useState(false);
   const [directorsCut, setDirectorsCut] = useState(false);
   const [filmLeader, setFilmLeader] = useState(false);
+  const [idleActive, setIdleActive] = useState(false);
+  const [irisRatio, setIrisRatio] = useState<IrisRatio>("16:9");
   const konamiBuffer = useRef<string[]>([]);
   const clickTimestamps = useRef<number[]>([]);
   const isLeaderPlaying = useRef(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
 
   // Slate: once per session
   useEffect(() => {
@@ -791,6 +898,51 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Idle overlay — 150s inactivity, desktop only (CSS hides on mobile)
+  const resetIdle = useCallback(() => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    setIdleActive(false);
+    idleTimerRef.current = setTimeout(() => setIdleActive(true), 150000);
+  }, []);
+
+  useEffect(() => {
+    resetIdle();
+    const events = ["mousemove", "mousedown", "keydown", "touchstart"] as const;
+    events.forEach((ev) => window.addEventListener(ev, resetIdle));
+    return () => {
+      events.forEach((ev) => window.removeEventListener(ev, resetIdle));
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [resetIdle]);
+
+  // IRIS ratio click
+  const handleIrisClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIrisRatio((r) => {
+      const idx = IRIS_RATIOS.indexOf(r);
+      return IRIS_RATIOS[(idx + 1) % IRIS_RATIOS.length];
+    });
+  }, []);
+
+  // IRIS clip-path — direct DOM mutation (avoids Framer Motion transition conflicts)
+  useEffect(() => {
+    const el = videoWrapperRef.current;
+    if (!el) return;
+    el.style.overflow = "hidden";
+    // Animated on ratio change
+    el.style.transition = "filter 200ms ease, clip-path 600ms ease";
+    const { width, height } = el.getBoundingClientRect();
+    el.style.clipPath = getClipPath(irisRatio, width, height);
+    // Resize: instant update, no clip-path transition
+    const observer = new ResizeObserver(() => {
+      el.style.transition = "filter 200ms ease";
+      const { width: w, height: h } = el.getBoundingClientRect();
+      el.style.clipPath = getClipPath(irisRatio, w, h);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [irisRatio]);
+
   // Triple-click / triple-tap → film leader
   const handleBackgroundClick = useCallback(() => {
     if (isLeaderPlaying.current) return;
@@ -824,6 +976,7 @@ export default function Home() {
 
       {/* ── Video + false-colour wrapper ── */}
       <motion.div
+        ref={videoWrapperRef}
         initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: videoReady ? 1 : 0 }}
         transition={{ duration: shouldReduceMotion ? 0 : 1.4, ease: "easeInOut" }}
@@ -888,7 +1041,13 @@ export default function Home() {
       <div className="frameline frameline-bottom" />
 
       {/* ── ARRI HUD ── */}
-      <ArriHUD visible={videoReady} falseColour={falseColour} onTCClick={handleTCClick} />
+      <ArriHUD
+        visible={videoReady}
+        falseColour={falseColour}
+        onTCClick={handleTCClick}
+        irisRatio={irisRatio}
+        onIrisClick={handleIrisClick}
+      />
 
       {/* ── Hero text (between framelines) ── */}
       <div
@@ -918,6 +1077,11 @@ export default function Home() {
           Ben Kaufman
         </motion.h1>
       </div>
+
+      {/* ── Quiet on Set idle overlay ── */}
+      <AnimatePresence>
+        {idleActive && <QuietOnSet />}
+      </AnimatePresence>
 
       {/* ── Director's Cut overlay (Konami) ── */}
       <AnimatePresence>

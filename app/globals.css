@@ -124,6 +124,15 @@ nav a:focus-visible {
   to   { transform: scale(1); opacity: 0; }
 }
 
+/* Idle overlay — desktop only */
+@keyframes quietPulse {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.75; }
+}
+@media (max-width: 767px) {
+  .quiet-overlay { display: none !important; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
