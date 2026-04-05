@@ -4,7 +4,7 @@
   --color-bg: #0C0C0C;
   --color-surface: #111111;
   --color-primary: #E8E4DC;
-  --color-secondary: #666666;
+  --color-secondary: #888888;
   --color-accent: #8B6914;
   --font-display: var(--font-cormorant);
   --font-ui: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -38,6 +38,78 @@ body {
   color: #0C0C0C;
 }
 
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 99999;
+  background: #0C0C0C;
+  color: #E8E4DC;
+  border: 1px solid #8B6914;
+  padding: 8px 16px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  outline: 2px solid #8B6914;
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible — keyboard navigation */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #8B6914;
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+nav a:focus-visible {
+  outline: 1px solid #8B6914;
+  outline-offset: 4px;
+}
+
+/* Projector flicker — commercials lightbox warmup */
+@keyframes projectorFlicker {
+  0%   { opacity: 0;    }
+  10%  { opacity: 0.85; }
+  20%  { opacity: 0.1;  }
+  30%  { opacity: 0.95; }
+  40%  { opacity: 0.2;  }
+  50%  { opacity: 1.0;  }
+  60%  { opacity: 0.4;  }
+  70%  { opacity: 0.95; }
+  80%  { opacity: 0.65; }
+  90%  { opacity: 1.0;  }
+  100% { opacity: 1.0;  }
+}
+
+.projector-flicker {
+  animation: projectorFlicker 600ms linear forwards;
+}
+
 /* Cursor animations */
 @keyframes cursorSpin {
   from { transform: rotate(0deg); }
@@ -61,4 +133,13 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   background: #333;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "./components/Nav";
 import Cursor from "./components/Cursor";
+import SkipLink from "./components/SkipLink";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -52,6 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
       <body>
+        <SkipLink />
         <Cursor />
         <Nav />
         {children}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 const photos = [
@@ -56,13 +56,14 @@ function PhotoCard({
   index: number;
   onClick: () => void;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const [hovered, setHovered] = useState(false);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.7, ease: "easeOut", delay: (index % 12) * 0.04 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.7, ease: "easeOut", delay: shouldReduceMotion ? 0 : (index % 12) * 0.04 }}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -157,14 +158,15 @@ function Lightbox({
     };
   }, [onClose, onPrev, onNext]);
 
+  const shouldReduceMotion = useReducedMotion();
   const photo = photos[currentIndex];
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
+      exit={{ opacity: shouldReduceMotion ? 1 : 0 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.25 }}
       onClick={onClose}
       style={{
         position: "fixed",
@@ -181,9 +183,9 @@ function Lightbox({
     >
       <motion.div
         key={currentIndex}
-        initial={{ opacity: 0, scale: 0.97 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0, scale: shouldReduceMotion ? 1 : 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.35, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
         style={{
           position: "relative",
@@ -407,13 +409,15 @@ export default function PhotographyPage() {
 
   return (
     <>
-      <div
+      <main
+        id="main-content"
         style={{
           paddingTop: `${navH + 8}px`,
           background: "#0C0C0C",
           minHeight: "100vh",
         }}
       >
+        <h1 className="sr-only">Photography</h1>
         <MasonryGrid>
           {photos.map((photo, i) => (
             <PhotoCard
@@ -424,7 +428,7 @@ export default function PhotographyPage() {
             />
           ))}
         </MasonryGrid>
-      </div>
+      </main>
 
       <AnimatePresence>
         {lightboxIndex !== null && (

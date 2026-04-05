@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface Project {
   title: string;
@@ -47,21 +47,24 @@ function GridItem({
   thumbnail,
   vimeoTitle,
   onClick,
+  spanFull,
 }: {
   project: Project;
   index: number;
   thumbnail: string | undefined;
   vimeoTitle: string | undefined;
   onClick: () => void;
+  spanFull?: boolean;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const [hovered, setHovered] = useState(false);
   const frameNum = String(index + 1).padStart(2, "0");
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.04 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut", delay: shouldReduceMotion ? 0 : index * 0.04 }}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -72,6 +75,7 @@ function GridItem({
         overflow: "hidden",
         cursor: "none",
         background: "#111111",
+        gridColumn: spanFull ? "1 / -1" : undefined,
       }}
     >
       {thumbnail && (
@@ -167,6 +171,51 @@ function GridItem({
   );
 }
 
+// ─── Projector hum ────────────────────────────────────────────────────────────
+function playProjectorHum() {
+  try {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const audioCtx = new AudioCtx();
+
+    const bufferSize = Math.floor(audioCtx.sampleRate * 1.8);
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = false;
+    source.playbackRate.setValueAtTime(0.6, audioCtx.currentTime);
+    source.playbackRate.linearRampToValueAtTime(1.0, audioCtx.currentTime + 0.25);
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = 800;
+    filter.Q.value = 0.8;
+
+    const gainNode = audioCtx.createGain();
+    const now = audioCtx.currentTime;
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.04, now + 0.12);
+    gainNode.gain.setValueAtTime(0.04, now + 0.30);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.60);
+
+    source.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    source.start(now);
+    source.stop(now + 1.8);
+  } catch {
+    // Web Audio blocked — fail silently
+  }
+}
+
 function Lightbox({
   project,
   description,
@@ -176,7 +225,44 @@ function Lightbox({
   description: string;
   onClose: () => void;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const [creditsOpen, setCreditsOpen] = useState(false);
+  // Warmup state: "gate" → "flicker" → "locked"
+  const [warmup, setWarmup] = useState<"gate" | "flicker" | "locked">(
+    shouldReduceMotion ? "locked" : "gate"
+  );
+  // gateFlashOpacity: null = div removed, 0 = transparent, 0.9 = visible
+  const [gateFlashOpacity, setGateFlashOpacity] = useState<number | null>(
+    shouldReduceMotion ? null : 0.9
+  );
+  const [flickerClass, setFlickerClass] = useState("");
+
+  // Warmup sequence on mount
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    playProjectorHum();
+
+    // Gate flash: on(0ms) → off(40ms) → on(110ms) → off(150ms) → remove div
+    const t1 = setTimeout(() => setGateFlashOpacity(0), 40);
+    const t2 = setTimeout(() => setGateFlashOpacity(0.9), 110);
+    const t3 = setTimeout(() => setGateFlashOpacity(0), 150);
+    const t4 = setTimeout(() => setGateFlashOpacity(null), 160);
+
+    // Flicker phase starts at 200ms
+    const t5 = setTimeout(() => {
+      setWarmup("flicker");
+      setFlickerClass("projector-flicker");
+    }, 200);
+
+    // Locked at 800ms (200ms offset + 600ms animation)
+    const t6 = setTimeout(() => {
+      setWarmup("locked");
+      setFlickerClass("");
+    }, 800);
+
+    return () => [t1, t2, t3, t4, t5, t6].forEach(clearTimeout);
+  }, [shouldReduceMotion]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -197,10 +283,10 @@ function Lightbox({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        exit={{ opacity: shouldReduceMotion ? 1 : 0 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: "easeInOut" }}
         onClick={() => { if (creditsOpen) setCreditsOpen(false); else onClose(); }}
         style={{
           position: "fixed",
@@ -227,8 +313,20 @@ function Lightbox({
             position: "relative",
           }}
         >
+          {/* Gate flash overlay — hard cuts, no CSS transition */}
+          {gateFlashOpacity !== null && (
+            <div style={{
+              position: "absolute", inset: 0, zIndex: 2,
+              background: "#FFFFFF",
+              opacity: gateFlashOpacity,
+              transition: "none",
+              pointerEvents: "none",
+            }} />
+          )}
           <iframe
             src={vimeoSrc}
+            className={flickerClass}
+            onAnimationEnd={() => setFlickerClass("")}
             style={{
               position: "absolute",
               top: 0,
@@ -236,6 +334,8 @@ function Lightbox({
               width: "100%",
               height: "100%",
               border: "none",
+              // gate: hidden while loading; flicker: let animation own opacity (no inline); locked: fully visible
+              opacity: warmup === "gate" ? 0 : warmup === "locked" ? 1 : undefined,
             }}
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -378,13 +478,15 @@ export default function CommercialsPage() {
 
   return (
     <>
-      <div
+      <main
+        id="main-content"
         style={{
           paddingTop: `${navH}px`,
           background: "#0C0C0C",
           minHeight: "100vh",
         }}
       >
+        <h1 className="sr-only">Commercials</h1>
         <div
           style={{
             display: "grid",
@@ -395,18 +497,29 @@ export default function CommercialsPage() {
           }}
           className="commercials-grid"
         >
-          {projects.map((project, i) => (
-            <GridItem
-              key={project.vimeoId}
-              project={project}
-              index={i}
-              thumbnail={vimeoData[project.vimeoId]?.thumbnail}
-              vimeoTitle={vimeoData[project.vimeoId]?.title}
-              onClick={() => setActive(project)}
-            />
-          ))}
+          {(() => {
+            const remainder = projects.length % 3;
+            return (
+              <>
+                {projects.map((project, i) => (
+                  <GridItem
+                    key={project.vimeoId}
+                    project={project}
+                    index={i}
+                    thumbnail={vimeoData[project.vimeoId]?.thumbnail}
+                    vimeoTitle={vimeoData[project.vimeoId]?.title}
+                    onClick={() => setActive(project)}
+                    spanFull={remainder === 1 && i === projects.length - 1}
+                  />
+                ))}
+                {remainder === 2 && (
+                  <div style={{ background: "#0C0C0C", aspectRatio: "16 / 9" }} />
+                )}
+              </>
+            );
+          })()}
         </div>
-      </div>
+      </main>
 
       {active && (
         <Lightbox

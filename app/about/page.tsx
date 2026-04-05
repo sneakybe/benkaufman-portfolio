@@ -1,81 +1,95 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState, useRef, useCallback } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 const bio =
   "With over 16 years in the industry, I've produced commercials, content, and stills for some of the world's most recognised brands, including John Lewis, Chanel, Dior, Dyson, Aston Martin, Asahi, World Rugby, JBL, and EE. As an Executive Producer, I've led high-profile campaigns across the UK, Europe, Asia, South America, and Africa, working at the intersection of production companies and agencies. Alongside my work in film, I'm a self-taught photographer, exhibited at Cannes Lions and selected by acclaimed British photographer Rankin.";
 
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ─│┼▓█▒░01";
-const SOURCE = ["BEN", "KAUFMAN"];
-const TARGET = ["EXECUTIVE", "PRODUCER"];
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const NAME_BK = ["BEN", "KAUFMAN"];
+const NAME_EP = ["EXECUTIVE", "PRODUCER"];
 
 // ─── Scramble name component ───────────────────────────────────────────────
 function ScrambleName() {
-  const [display, setDisplay] = useState<string[]>(SOURCE);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isAnimating = useRef(false);
+  const [display, setDisplay] = useState<string[]>(NAME_BK);
+  const resolvedState = useRef<"bk" | "ep">("bk");
+  const rafRef = useRef<number | null>(null);
 
-  const scrambleTo = useCallback(
-    (from: string[], to: string[], onDone?: () => void) => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      let step = 0;
-      const totalSteps = 30;
+  const scrambleTo = useCallback((from: string[], to: string[]) => {
+    // Cancel any running animation
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-      const tick = () => {
-        setDisplay(
-          to.map((targetLine, li) => {
-            const maxLen = Math.max(targetLine.length, from[li]?.length || 0);
-            // Output length grows/shrinks toward target length over the animation
-            const progress = Math.min(1, step / (totalSteps * 0.7));
-            const fromLen = from[li]?.length || 0;
-            const currentLen = Math.round(fromLen + (targetLine.length - fromLen) * progress);
-            const outLen = Math.max(fromLen, Math.min(targetLine.length, currentLen));
-            return Array.from({ length: outLen }, (_, ci) => {
-              const threshold = (ci / maxLen) * totalSteps * 0.6 + li * 3;
-              if (step >= threshold && ci < targetLine.length) return targetLine[ci];
-              if (ci >= targetLine.length) return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-              return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-            }).join("");
-          })
-        );
-        step++;
-        if (step <= totalSteps) {
-          timerRef.current = setTimeout(tick, 38);
+    const totalDuration = 800;
+    const randomPhase = 400;
+    const resolvePhase = 400;
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+
+      const lines = to.map((targetLine, li) => {
+        const fromLine = from[li] ?? "";
+        const fromLen = fromLine.length;
+        const toLen = targetLine.length;
+
+        if (elapsed < randomPhase) {
+          // Phase 1: interpolate length, randomise non-space chars
+          const progress = elapsed / randomPhase;
+          const currentLen = Math.round(fromLen + (toLen - fromLen) * progress);
+          return Array.from({ length: currentLen }, (_, ci) => {
+            const targetCh = targetLine[ci];
+            if (targetCh === " ") return " ";
+            return SCRAMBLE_CHARS[Math.floor(Math.random() * 26)];
+          }).join("");
         } else {
-          setDisplay(to);
-          onDone?.();
+          // Phase 2: lock chars left-to-right
+          const resolveProgress = (elapsed - randomPhase) / resolvePhase;
+          return Array.from({ length: toLen }, (_, ci) => {
+            const ch = targetLine[ci];
+            if (ch === " ") return " ";
+            const lockThreshold = ci / toLen;
+            return resolveProgress >= lockThreshold
+              ? ch
+              : SCRAMBLE_CHARS[Math.floor(Math.random() * 26)];
+          }).join("");
         }
-      };
-      tick();
-    },
-    []
-  );
+      });
 
-  const runScramble = useCallback(() => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
+      setDisplay(lines);
 
-    scrambleTo(SOURCE, TARGET, () => {
-      timerRef.current = setTimeout(() => {
-        scrambleTo(TARGET, SOURCE, () => {
-          isAnimating.current = false;
-        });
-      }, 300);
-    });
-  }, [scrambleTo]);
+      if (elapsed < totalDuration) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setDisplay(to);
+        resolvedState.current = to === NAME_EP ? "ep" : "bk";
+        rafRef.current = null;
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
 
   const handleMouseEnter = useCallback(() => {
-    if (isAnimating.current) return;
-    hoverTimerRef.current = setTimeout(runScramble, 3000);
-  }, [runScramble]);
+    if (resolvedState.current === "bk") {
+      scrambleTo(NAME_BK, NAME_EP);
+    }
+  }, [scrambleTo]);
 
   const handleMouseLeave = useCallback(() => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current);
-      hoverTimerRef.current = null;
+    if (resolvedState.current === "ep") {
+      scrambleTo(NAME_EP, NAME_BK);
+    } else {
+      // Still animating toward EP — reverse mid-flight
+      scrambleTo(display, NAME_BK);
     }
+  }, [scrambleTo, display]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
@@ -103,8 +117,10 @@ function ScrambleName() {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function AboutPage() {
+  const shouldReduceMotion = useReducedMotion();
   return (
     <main
+      id="main-content"
       style={{
         background: "#0C0C0C",
         minHeight: "100vh",
@@ -124,9 +140,9 @@ export default function AboutPage() {
       >
         {/* Left — full-bleed headshot */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, ease: "easeOut" }}
+          transition={{ duration: shouldReduceMotion ? 0 : 1.1, ease: "easeOut" }}
           data-cursor="headshot"
           className="about-headshot"
           style={{
@@ -161,12 +177,12 @@ export default function AboutPage() {
 
         {/* Right — bio content */}
         <motion.div
-          initial={{ opacity: 0, x: 24 }}
+          initial={{ opacity: shouldReduceMotion ? 1 : 0, x: shouldReduceMotion ? 0 : 24 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut", delay: 0.3 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: "easeOut", delay: shouldReduceMotion ? 0 : 0.3 }}
           style={{
             padding: "80px",
-            paddingTop: "100px",
+            paddingTop: "140px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -261,6 +277,20 @@ export default function AboutPage() {
             >
               www.benkaufmanphotography.com
             </a>
+
+            {/* Selected work footnote — inside contact section, 48px below last link */}
+            <p
+              style={{
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: "9px",
+                letterSpacing: "0.4em",
+                textTransform: "uppercase",
+                color: "rgba(232, 228, 220, 0.25)",
+                marginTop: "36px",
+              }}
+            >
+              SELECTED WORK&nbsp;&nbsp;2010 — 2026
+            </p>
           </div>
         </motion.div>
       </div>

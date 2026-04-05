@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 // ─── Timecode ────────────────────────────────────────────────────────────────
 const FPS = 24;
@@ -110,6 +110,12 @@ function HUDItem({
 }
 
 // ─── ARRI Alexa HUD ──────────────────────────────────────────────────────────
+// TC starts at 01:07:23:00 — a realistic mid-shoot position
+const TC_START_FRAMES =
+  1 * 3600 * FPS + // 1 hour
+  7 * 60 * FPS +   // 7 minutes
+  23 * FPS;        // 23 seconds
+
 function ArriHUD({
   visible,
   falseColour,
@@ -119,12 +125,13 @@ function ArriHUD({
   falseColour: boolean;
   onTCClick: () => void;
 }) {
-  const [frames, setFrames] = useState(0);
+  const [frames, setFrames] = useState(TC_START_FRAMES);
   const [isRec, setIsRec] = useState(false);
   const [stbyPulse, setStbyPulse] = useState(1);
-  // PWR drains from 16.8V → 14.2V over 20 min (1200s)
   const [pwr, setPwr] = useState(16.8);
-  const startRef = useRef(Date.now());
+  const pwrRef = useRef(16.8);
+  const [shutterDisplay, setShutterDisplay] = useState(172.8);
+  const shutterRef = useRef(172.8);
 
   // Live timecode via RAF
   useEffect(() => {
@@ -159,14 +166,61 @@ function ArriHUD({
     return () => clearInterval(id);
   }, [isRec]);
 
-  // PWR drain every 30s
+  // PWR — random 0.1V drop every 20–30s, resets at floor
   useEffect(() => {
-    const id = setInterval(() => {
-      const elapsed = (Date.now() - startRef.current) / 1000;
-      const drained = (elapsed / 1200) * (16.8 - 14.2);
-      setPwr(Math.max(14.2, parseFloat((16.8 - drained).toFixed(1))));
-    }, 30000);
-    return () => clearInterval(id);
+    let scheduleId: ReturnType<typeof setTimeout>;
+    const scheduleNext = () => {
+      const delay = 20000 + Math.random() * 10000;
+      scheduleId = setTimeout(() => {
+        const next = parseFloat((pwrRef.current - 0.1).toFixed(1));
+        const clamped = next < 14.2 ? 16.8 : next;
+        pwrRef.current = clamped;
+        setPwr(clamped);
+        scheduleNext();
+      }, delay);
+    };
+    scheduleNext();
+    return () => clearTimeout(scheduleId);
+  }, []);
+
+  // SHUTTER — random drift ±0.3 every 8–14s, interpolated over 600ms
+  useEffect(() => {
+    let scheduleId: ReturnType<typeof setTimeout>;
+    let driftRaf: number;
+
+    const animateDrift = (from: number, to: number) => {
+      const startTime = performance.now();
+      const duration = 600;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - startTime) / duration);
+        const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        setShutterDisplay(parseFloat((from + (to - from) * eased).toFixed(1)));
+        if (t < 1) {
+          driftRaf = requestAnimationFrame(tick);
+        } else {
+          shutterRef.current = to;
+        }
+      };
+      driftRaf = requestAnimationFrame(tick);
+    };
+
+    const scheduleNext = () => {
+      const delay = 8000 + Math.random() * 6000;
+      scheduleId = setTimeout(() => {
+        const delta = Math.random() > 0.5 ? 0.3 : -0.3;
+        const next = parseFloat(
+          Math.min(176.0, Math.max(168.0, shutterRef.current + delta)).toFixed(1)
+        );
+        animateDrift(shutterRef.current, next);
+        scheduleNext();
+      }, delay);
+    };
+    scheduleNext();
+
+    return () => {
+      clearTimeout(scheduleId);
+      cancelAnimationFrame(driftRaf);
+    };
   }, []);
 
   const tc = formatTC(frames);
@@ -205,7 +259,7 @@ function ArriHUD({
           {/* Desktop: all 6 items */}
           <span className="hud-desktop-only" style={{ display: "contents" }}>
             <HUDItem label="FPS" value="24.000" />
-            <HUDItem label="SHUTTER" value="172.8" />
+            <HUDItem label="SHUTTER" value={String(shutterDisplay)} />
             <HUDItem label="IRIS" value="T 2.8  0/10" />
             <HUDItem label="EI" value="800" />
             <HUDItem label="ND" value="0.6" />
@@ -338,9 +392,9 @@ function ArriHUD({
         <span className="hud-desktop-only" style={{ display: "contents" }}>
           <HUDItem label="MEDIA" value="0:21h" />
 
-          {/* TC — clickable for false colour */}
+          {/* TC — clickable for false colour; stopPropagation prevents background click counter */}
           <div
-            onClick={onTCClick}
+            onClick={(e) => { e.stopPropagation(); onTCClick(); }}
             style={{ pointerEvents: "all", cursor: "none" }}
           >
             <HUDItem label="TC" value={tc} highlight={falseColour} />
@@ -428,6 +482,188 @@ function FalseColourOverlay({ active }: { active: boolean }) {
   );
 }
 
+// ─── 2-pop audio ─────────────────────────────────────────────────────────────
+function play2Pop() {
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = 1000;
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.005);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime + 0.06);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch {
+    // Web Audio blocked — fail silently
+  }
+}
+
+// ─── Film leader ──────────────────────────────────────────────────────────────
+const GRAIN_SVG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23grain)'/%3E%3C/svg%3E")`;
+
+type LeaderPhase = "flash" | "countdown" | "black" | "fadeout";
+
+function FilmLeader({ onDone }: { onDone: () => void }) {
+  const [phase, setPhase] = useState<LeaderPhase>("flash");
+  const [countNum, setCountNum] = useState(8);
+  const [twoPop, setTwoPop] = useState(false);
+  const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const add = (fn: () => void, delay: number) => {
+      const t = setTimeout(fn, delay);
+      timeouts.current.push(t);
+    };
+
+    // t=50: end flash, start countdown at 8
+    add(() => { setPhase("countdown"); setCountNum(8); }, 50);
+
+    // t=270,490,710,930,1150: hard-cut to 7,6,5,4,3
+    [7, 6, 5, 4, 3].forEach((n, i) => {
+      add(() => setCountNum(n), 50 + (i + 1) * 220);
+    });
+
+    // t=1370: cut to 2, fire 2-pop
+    add(() => {
+      setCountNum(2);
+      play2Pop();
+      setTwoPop(true);
+      const t2 = setTimeout(() => setTwoPop(false), 40);
+      timeouts.current.push(t2);
+    }, 1370);
+
+    // t=1590: cut to black
+    add(() => setPhase("black"), 1590);
+
+    // t=1790: start fade-out
+    add(() => setPhase("fadeout"), 1790);
+
+    // t=2090: done
+    add(onDone, 2090);
+
+    return () => timeouts.current.forEach(clearTimeout);
+  }, [onDone]);
+
+  const isFlash = phase === "flash";
+  const isCountdown = phase === "countdown";
+  const isBlack = phase === "black";
+  const isFadeout = phase === "fadeout";
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        pointerEvents: "none",
+        opacity: isFadeout ? 0 : 1,
+        transition: isFadeout ? "opacity 300ms ease" : "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* Flash frame */}
+      {isFlash && (
+        <div style={{ position: "absolute", inset: 0, background: "#FFFFFF" }} />
+      )}
+
+      {/* Countdown frame */}
+      {isCountdown && (
+        <>
+          {/* Full-screen background */}
+          <div style={{ position: "absolute", inset: 0, background: "#0C0C0C" }} />
+          {/* Crosshair horizontal */}
+          <div style={{
+            position: "absolute", top: "50%", left: 0, right: 0,
+            height: "1px", background: "rgba(232,228,220,0.15)",
+            transform: "translateY(-50%)", pointerEvents: "none",
+          }} />
+          {/* Crosshair vertical */}
+          <div style={{
+            position: "absolute", left: "50%", top: 0, bottom: 0,
+            width: "1px", background: "rgba(232,228,220,0.15)",
+            transform: "translateX(-50%)", pointerEvents: "none",
+          }} />
+          {/* 2-pop visual: brief white horizontal line */}
+          {twoPop && (
+            <div style={{
+              position: "absolute", top: "50%", left: 0, right: 0,
+              height: "2px", background: "#FFFFFF", opacity: 0.9,
+              transform: "translateY(-50%)", zIndex: 2,
+            }} />
+          )}
+          {/* Circle — in flex flow, centred by parent */}
+          <div style={{
+            position: "relative",
+            width: "40vmin", height: "40vmin",
+            borderRadius: "50%",
+            border: "2px solid #E8E4DC",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+            zIndex: 1,
+          }}>
+            <span style={{
+              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+              fontWeight: 300,
+              fontSize: "20vmin",
+              lineHeight: 1,
+              color: "#E8E4DC",
+              textAlign: "center",
+              userSelect: "none",
+              position: "relative",
+              top: "-0.06em",
+            }}>
+              {countNum}
+            </span>
+          </div>
+          {/* Corner labels — absolute relative to root overlay */}
+          <span style={{
+            position: "absolute", top: "24px", left: "24px",
+            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontSize: "10px", color: "rgba(232,228,220,0.4)",
+            letterSpacing: "0.1em", userSelect: "none",
+          }}>LFOA</span>
+          <span style={{
+            position: "absolute", bottom: "24px", left: "24px",
+            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontSize: "10px", color: "rgba(232,228,220,0.4)",
+            letterSpacing: "0.1em", userSelect: "none",
+          }}>SYNC</span>
+          <span style={{
+            position: "absolute", bottom: "24px", right: "24px",
+            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontSize: "10px", color: "rgba(232,228,220,0.4)",
+            letterSpacing: "0.1em", userSelect: "none",
+          }}>BK&nbsp;&nbsp;A&nbsp;&nbsp;001</span>
+          {/* Grain */}
+          <div style={{
+            position: "absolute", inset: 0, opacity: 0.12,
+            backgroundImage: GRAIN_SVG,
+            backgroundRepeat: "repeat", backgroundSize: "300px 300px",
+            pointerEvents: "none",
+          }} />
+          {/* Vignette */}
+          <div style={{
+            position: "absolute", inset: 0, pointerEvents: "none",
+            background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)",
+          }} />
+        </>
+      )}
+
+      {/* Cut to black */}
+      {(isBlack || isFadeout) && (
+        <div style={{ position: "absolute", inset: 0, background: "#000000" }} />
+      )}
+    </div>
+  );
+}
+
 // ─── Konami ───────────────────────────────────────────────────────────────────
 const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
 
@@ -504,11 +740,15 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
+  const shouldReduceMotion = useReducedMotion();
   const [showSlate, setShowSlate] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [falseColour, setFalseColour] = useState(false);
   const [directorsCut, setDirectorsCut] = useState(false);
+  const [filmLeader, setFilmLeader] = useState(false);
   const konamiBuffer = useRef<string[]>([]);
+  const clickTimestamps = useRef<number[]>([]);
+  const isLeaderPlaying = useRef(false);
 
   // Slate: once per session
   useEffect(() => {
@@ -529,6 +769,7 @@ export default function Home() {
   // False colour — auto-reset after 2.1s
   const fcTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleTCClick = useCallback(() => {
+    if (isLeaderPlaying.current) return;
     setFalseColour((fc) => {
       if (!fc) {
         if (fcTimer.current) clearTimeout(fcTimer.current);
@@ -550,14 +791,32 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Triple-click / triple-tap → film leader
+  const handleBackgroundClick = useCallback(() => {
+    if (isLeaderPlaying.current) return;
+    const now = Date.now();
+    clickTimestamps.current = [...clickTimestamps.current, now].filter(
+      (t) => now - t < 600
+    );
+    if (clickTimestamps.current.length >= 3) {
+      clickTimestamps.current = [];
+      isLeaderPlaying.current = true;
+      setFilmLeader(true);
+    }
+  }, []);
+
   return (
     <main
+      id="main-content"
+      onClick={handleBackgroundClick}
       style={{
         position: "relative",
         width: "100vw",
         height: "100vh",
         overflow: "hidden",
         background: "#0C0C0C",
+        userSelect: "none",
+        WebkitUserSelect: "none",
       }}
     >
       {/* ── Slate ── */}
@@ -565,9 +824,9 @@ export default function Home() {
 
       {/* ── Video + false-colour wrapper ── */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: videoReady ? 1 : 0 }}
-        transition={{ duration: 1.4, ease: "easeInOut" }}
+        transition={{ duration: shouldReduceMotion ? 0 : 1.4, ease: "easeInOut" }}
         style={{
           position: "absolute",
           inset: 0,
@@ -642,9 +901,9 @@ export default function Home() {
         }}
       >
         <motion.h1
-          initial={{ opacity: 0, y: 36 }}
+          initial={{ opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 36 }}
           animate={{ opacity: videoReady ? 1 : 0, y: videoReady ? 0 : 36 }}
-          transition={{ duration: 1.0, ease: "easeOut", delay: 0.6 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 1.0, ease: "easeOut", delay: shouldReduceMotion ? 0 : 0.6 }}
           style={{
             fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
             fontWeight: 300,
@@ -664,6 +923,15 @@ export default function Home() {
       <AnimatePresence>
         {directorsCut && <DirectorsCut onClose={() => setDirectorsCut(false)} />}
       </AnimatePresence>
+
+      {/* ── Film leader (triple-click) ── */}
+      {filmLeader && (
+        <FilmLeader onDone={() => {
+          setFilmLeader(false);
+          isLeaderPlaying.current = false;
+          clickTimestamps.current = [];
+        }} />
+      )}
 
       <style>{`
         .frameline {
