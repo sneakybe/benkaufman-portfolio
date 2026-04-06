@@ -286,7 +286,7 @@ export default function AboutPage() {
                 letterSpacing: "0.4em",
                 textTransform: "uppercase",
                 color: "rgba(232, 228, 220, 0.25)",
-                marginTop: "36px",
+                marginTop: "16px",
               }}
             >
               SELECTED WORK&nbsp;&nbsp;2010 — 2026
