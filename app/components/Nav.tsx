@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -53,6 +53,10 @@ export default function Nav() {
         <Link
           href="/"
           data-cursor="logo"
+          // Invisible on home, so it must also be out of the tab order:
+          // pointer-events alone still leaves a focus ring around nothing.
+          aria-hidden={isHome}
+          tabIndex={isHome ? -1 : undefined}
           style={{
             textDecoration: "none",
             lineHeight: 1,

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import Player from "@vimeo/player";
 
 // ─── Timecode ────────────────────────────────────────────────────────────────
 const FPS = 24;
@@ -84,7 +86,7 @@ function HUDItem({
           fontFamily: "var(--font-data)",
           fontSize: "9px",
           fontWeight: 400,
-          color: highlight ? "rgba(255,180,0,0.9)" : "rgba(255,255,255,0.6)",
+          color: highlight ? "rgba(255,200,0,0.9)" : "rgba(255,255,255,0.6)",
           letterSpacing: "0.08em",
           transition: "color 300ms ease",
           userSelect: "none",
@@ -138,14 +140,10 @@ const TC_START_FRAMES =
 
 function ArriHUD({
   visible,
-  falseColour,
-  onTCClick,
   irisRatio,
   onIrisClick,
 }: {
   visible: boolean;
-  falseColour: boolean;
-  onTCClick: () => void;
   irisRatio: IrisRatio;
   onIrisClick: (e: React.MouseEvent) => void;
 }) {
@@ -157,17 +155,20 @@ function ArriHUD({
   const [shutterDisplay, setShutterDisplay] = useState(172.8);
   const shutterRef = useRef(172.8);
   const [irisHover, setIrisHover] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const irisLabel =
     irisRatio === "2.39:1" ? "T 2.39  SCOPE" :
     irisRatio === "1.85:1" ? "T 1.85  FLAT"  :
     "T 2.8  0/10";
 
-  // Live timecode via RAF
+  // Live timecode via RAF. A camera keeps rolling, but there is no reason to
+  // re-render 24 times a second into a tab nobody is looking at.
   useEffect(() => {
     let lastTime = performance.now();
     let accumulated = 0;
-    let raf: number;
+    let raf = 0;
+
     const tick = (now: number) => {
       accumulated += now - lastTime;
       lastTime = now;
@@ -179,8 +180,26 @@ function ArriHUD({
       }
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+
+    const start = () => {
+      if (raf) return;
+      lastTime = performance.now();
+      accumulated = 0;
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+
+    start();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   // STBY → REC after 10s
@@ -257,9 +276,9 @@ function ArriHUD({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: shouldReduceMotion ? 0.82 : 0 }}
       animate={{ opacity: visible ? 0.82 : 0 }}
-      transition={{ duration: 0.9, delay: 0.5 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.5 }}
       className="arri-hud"
       style={{
         position: "absolute",
@@ -290,19 +309,29 @@ function ArriHUD({
           <span className="hud-desktop-only" style={{ display: "contents" }}>
             <HUDItem label="FPS" value="24.000" />
             <HUDItem label="SHUTTER" value={String(shutterDisplay)} />
-            <div
+            {/* The one readout that is also a control: matting the frame is a
+                real film-craft gesture, so it is a real button. */}
+            <button
               onClick={onIrisClick}
               onMouseEnter={() => setIrisHover(true)}
               onMouseLeave={() => setIrisHover(false)}
+              onFocus={() => setIrisHover(true)}
+              onBlur={() => setIrisHover(false)}
+              aria-label={`Aspect ratio: ${irisRatio}. Activate to change.`}
+              data-cursor="nav"
               style={{
                 pointerEvents: "all",
-                cursor: "none",
+                background: "none",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                textAlign: "left",
                 opacity: irisHover ? 1 : 0.7,
                 transition: "opacity 200ms ease",
               }}
             >
-              <HUDItem label="IRIS" value={irisLabel} />
-            </div>
+              <HUDItem label="IRIS" value={irisLabel} highlight={irisRatio !== "16:9"} />
+            </button>
             {irisRatio !== "16:9" && (
               <HUDItem label="AR" value={irisRatio} highlight />
             )}
@@ -315,28 +344,6 @@ function ArriHUD({
           <span className="hud-mobile-only">
             <HUDItem label="FPS" value="24.000" />
           </span>
-
-          {/* FALSE COLOUR — absolute centre */}
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "35px",
-              transform: "translateX(-50%)",
-              fontFamily: "var(--font-data)",
-              fontSize: "10px",
-              fontWeight: 500,
-              letterSpacing: "0.3em",
-              color: "rgba(255,200,0,0.95)",
-              opacity: falseColour ? 1 : 0,
-              transition: "opacity 300ms ease",
-              pointerEvents: "none",
-              userSelect: "none",
-              whiteSpace: "nowrap",
-            }}
-          >
-            FALSE COLOUR
-          </div>
         </div>
       </div>
 
@@ -391,12 +398,12 @@ function ArriHUD({
         <span className="hud-desktop-only" style={{ display: "contents" }}>
           <HUDItem label="FCL" value="47.0mm" />
           <HUDItem label="PWR" value={`${pwr}V`} />
-          <HUDItem label="" value="A_0004  C001" />
+          <HUDItem label="REEL" value="A_0004  C001" />
         </span>
 
         {/* Mobile bottom bar: TC left, REC centre, PWR right */}
         <span className="hud-mobile-bottom">
-          <HUDItem label="TC" value={tc} highlight={falseColour} />
+          <HUDItem label="TC" value={tc} />
         </span>
 
         {/* STBY / REC indicator — desktop + mobile centre */}
@@ -437,13 +444,7 @@ function ArriHUD({
         <span className="hud-desktop-only" style={{ display: "contents" }}>
           <HUDItem label="MEDIA" value="0:21h" />
 
-          {/* TC — clickable for false colour; stopPropagation prevents background click counter */}
-          <div
-            onClick={(e) => { e.stopPropagation(); onTCClick(); }}
-            style={{ pointerEvents: "all", cursor: "none" }}
-          >
-            <HUDItem label="TC" value={tc} highlight={falseColour} />
-          </div>
+          <HUDItem label="TC" value={tc} />
         </span>
 
         {/* Mobile: PWR right */}
@@ -457,6 +458,7 @@ function ArriHUD({
 
 // ─── Slate — minimal BENKAUFMAN.CO ────────────────────────────────────────────
 function Slate({ onDone }: { onDone: () => void }) {
+  const shouldReduceMotion = useReducedMotion();
   const [phase, setPhase] = useState<"hold" | "out">("hold");
 
   useEffect(() => {
@@ -472,12 +474,12 @@ function Slate({ onDone }: { onDone: () => void }) {
     <motion.div
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === "out" ? 0 : 1 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: "easeOut" }}
       style={{
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "#000",
+        background: "#0a0a0a",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -502,35 +504,29 @@ function Slate({ onDone }: { onDone: () => void }) {
   );
 }
 
-// ─── False colour overlay ─────────────────────────────────────────────────────
-function FalseColourOverlay({ active }: { active: boolean }) {
-  return (
-    <AnimatePresence>
-      {active && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.85 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 4,
-            pointerEvents: "none",
-            mixBlendMode: "color",
-            background:
-              "linear-gradient(to bottom, rgba(255,20,100,0.5) 0%, rgba(255,200,0,0.4) 25%, rgba(0,255,80,0.45) 50%, rgba(0,200,255,0.4) 75%, rgba(80,0,255,0.5) 100%)",
-          }}
-        />
-      )}
-    </AnimatePresence>
-  );
+// ─── 2-pop audio — one shared context, resumed per screening ─────────────────
+let sharedAudioCtx: AudioContext | null = null;
+
+function getAudioContext(): AudioContext | null {
+  try {
+    if (!sharedAudioCtx) {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return null;
+      sharedAudioCtx = new AudioCtx();
+    }
+    if (sharedAudioCtx.state === "suspended") void sharedAudioCtx.resume();
+    return sharedAudioCtx;
+  } catch {
+    return null;
+  }
 }
 
-// ─── 2-pop audio ─────────────────────────────────────────────────────────────
 function play2Pop() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
   try {
-    const ctx = new AudioContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
@@ -558,6 +554,23 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
   const [countNum, setCountNum] = useState(8);
   const [twoPop, setTwoPop] = useState(false);
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // Escape or a click ends the leader immediately. A 2s sequence a visitor
+  // triggered by accident must always be interruptible.
+  useEffect(() => {
+    const abort = () => onDone();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") abort();
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("mousedown", abort);
+    window.addEventListener("touchstart", abort);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("mousedown", abort);
+      window.removeEventListener("touchstart", abort);
+    };
+  }, [onDone]);
 
   useEffect(() => {
     const add = (fn: () => void, delay: number) => {
@@ -656,7 +669,7 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
             <span style={{
               fontFamily: "var(--font-serif)",
               fontWeight: 300,
-              fontSize: "20vmin",
+              fontSize: "clamp(4rem, 20vmin, 12rem)",
               lineHeight: 1,
               color: "#E8E4DC",
               textAlign: "center",
@@ -703,7 +716,7 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
 
       {/* Cut to black */}
       {(isBlack || isFadeout) && (
-        <div style={{ position: "absolute", inset: 0, background: "#000000" }} />
+        <div style={{ position: "absolute", inset: 0, background: "#0a0a0a" }} />
       )}
     </div>
   );
@@ -713,18 +726,43 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
 const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
 
 function DirectorsCut({ onClose }: { onClose: () => void }) {
+  const shouldReduceMotion = useReducedMotion();
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // It can only be opened from the keyboard, so it must be closable from the
+  // keyboard. Focus moves in, is held, and is handed back on close.
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "Tab") {
+        e.preventDefault();
+        closeRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      previouslyFocused?.focus?.();
+    };
+  }, [onClose]);
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Director's Cut"
+      initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.9 }}
+      exit={{ opacity: shouldReduceMotion ? 1 : 0 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.9 }}
       onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
         zIndex: 9500,
-        background: "rgba(0,0,0,0.97)",
+        background: "rgba(10,10,10,0.97)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
         display: "flex",
@@ -735,9 +773,9 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
       }}
     >
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.7 }}
+        transition={{ delay: shouldReduceMotion ? 0 : 0.4, duration: shouldReduceMotion ? 0 : 0.7 }}
         style={{
           fontFamily: "var(--font-data)",
           fontSize: "10px",
@@ -746,12 +784,12 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
           textTransform: "uppercase",
         }}
       >
-        KONAMI CODE ACTIVATED
+        REEL 01 — ALT TAKE
       </motion.div>
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
+        transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0 : 0.9, ease: "easeOut" }}
         style={{
           fontFamily: "var(--font-serif)",
           fontWeight: 300,
@@ -765,38 +803,47 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
       >
         Director&apos;s<br />Cut
       </motion.div>
-      <motion.div
-        initial={{ opacity: 0 }}
+      <motion.button
+        ref={closeRef}
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
+        transition={{ delay: shouldReduceMotion ? 0 : 1.1, duration: shouldReduceMotion ? 0 : 0.6 }}
         style={{
+          background: "none",
+          border: "none",
+          padding: "8px",
           fontFamily: "var(--font-data)",
           fontSize: "10px",
           letterSpacing: "0.35em",
-          color: "rgba(232,228,220,0.2)",
+          color: "rgba(232,228,220,0.45)",
           textTransform: "uppercase",
         }}
       >
-        CLICK TO DISMISS
-      </motion.div>
+        Esc to cut
+      </motion.button>
     </motion.div>
   );
 }
 
 // ─── QUIET ON SET idle overlay ────────────────────────────────────────────────
 function QuietOnSet() {
+  const shouldReduceMotion = useReducedMotion();
   return (
     <motion.div
       className="quiet-overlay"
-      initial={{ opacity: 0 }}
+      aria-hidden="true"
+      initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.3 } }}
-      transition={{ duration: 1.2 }}
+      exit={{ opacity: 0, transition: { duration: shouldReduceMotion ? 0 : 0.3 } }}
+      transition={{ duration: shouldReduceMotion ? 0 : 1.2 }}
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 9998,
-        background: "rgba(0,0,0,0.92)",
+        // Below the header (z-100): the card quiets the reel, it never covers
+        // the only route to the work.
+        zIndex: 95,
+        background: "rgba(10,10,10,0.92)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -806,9 +853,9 @@ function QuietOnSet() {
       }}
     >
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
+        transition={{ delay: shouldReduceMotion ? 0 : 0.5, duration: shouldReduceMotion ? 0 : 0.9, ease: "easeOut" }}
         style={{
           fontFamily: "var(--font-serif)",
           fontWeight: 300,
@@ -822,9 +869,9 @@ function QuietOnSet() {
         Quiet on Set
       </motion.div>
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
+        transition={{ delay: shouldReduceMotion ? 0 : 1.1, duration: shouldReduceMotion ? 0 : 0.6 }}
         style={{
           fontFamily: "var(--font-ui)",
           fontSize: "10px",
@@ -835,7 +882,7 @@ function QuietOnSet() {
           animation: "quietPulse 2.4s ease-in-out infinite",
         }}
       >
-        [ ANY KEY TO CONTINUE ]
+        [ MOVE TO ROLL ]
       </motion.div>
     </motion.div>
   );
@@ -845,8 +892,10 @@ function QuietOnSet() {
 export default function Home() {
   const shouldReduceMotion = useReducedMotion();
   const [showSlate, setShowSlate] = useState(false);
-  const [videoReady, setVideoReady] = useState(false);
-  const [falseColour, setFalseColour] = useState(false);
+  const [slateDone, setSlateDone] = useState(false);
+  // "cueing" until the player reports; "stalled" means the poster carries the
+  // page. Both are legitimate states — neither is a blank screen.
+  const [reelState, setReelState] = useState<"cueing" | "playing" | "stalled">("cueing");
   const [directorsCut, setDirectorsCut] = useState(false);
   const [filmLeader, setFilmLeader] = useState(false);
   const [idleActive, setIdleActive] = useState(false);
@@ -856,34 +905,76 @@ export default function Home() {
   const isLeaderPlaying = useRef(false);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Slate: once per session
+  // The page is dressed once the slate is out of the way and the reel has
+  // reported one way or the other.
+  const videoReady = slateDone && reelState !== "cueing";
+
+  // Slate: once per session. Storage throws in Safari Private Mode, and a
+  // blocked read must never be the reason the page stays black.
   useEffect(() => {
-    const seen = sessionStorage.getItem("slate-seen");
-    if (!seen) {
-      setShowSlate(true);
-    } else {
-      setVideoReady(true);
+    let seen: string | null = null;
+    try {
+      seen = sessionStorage.getItem("slate-seen");
+    } catch {
+      seen = null;
     }
+    setShowSlate(!seen);
+    if (seen) setSlateDone(true);
   }, []);
 
   const handleSlateDone = useCallback(() => {
-    sessionStorage.setItem("slate-seen", "1");
+    try {
+      sessionStorage.setItem("slate-seen", "1");
+    } catch {
+      // non-fatal — the slate simply plays again next time
+    }
     setShowSlate(false);
-    setVideoReady(true);
+    setSlateDone(true);
   }, []);
 
-  // False colour — auto-reset after 2.1s
-  const fcTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleTCClick = useCallback(() => {
-    if (isLeaderPlaying.current) return;
-    setFalseColour((fc) => {
-      if (!fc) {
-        if (fcTimer.current) clearTimeout(fcTimer.current);
-        fcTimer.current = setTimeout(() => setFalseColour(false), 2100);
+  // ── The reel reports for itself ────────────────────────────────────────────
+  // The picture is revealed when the player says it is running, not when a
+  // timer says it should be. If it never reports — blocked embed, refused
+  // autoplay, dead network — the poster frame stands in and the page is
+  // never an empty black rectangle.
+  useEffect(() => {
+    const el = iframeRef.current;
+    if (!el) return;
+
+    let settled = false;
+    let player: Player | null = null;
+    const settle = (state: "playing" | "stalled") => {
+      if (settled) return;
+      settled = true;
+      setReelState(state);
+    };
+
+    try {
+      player = new Player(el);
+      player.on("play", () => settle("playing"));
+      player.on("playing", () => settle("playing"));
+      player.on("bufferend", () => settle("playing"));
+      player.ready().then(
+        () => { player?.play().catch(() => settle("stalled")); },
+        () => settle("stalled")
+      );
+    } catch {
+      settle("stalled");
+    }
+
+    const fallback = setTimeout(() => settle("stalled"), 4000);
+    return () => {
+      clearTimeout(fallback);
+      try {
+        player?.off("play");
+        player?.off("playing");
+        player?.off("bufferend");
+      } catch {
+        // player already torn down
       }
-      return !fc;
-    });
+    };
   }, []);
 
   // Konami
@@ -898,7 +989,9 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Idle overlay — 150s inactivity, desktop only (CSS hides on mobile)
+  // Idle overlay — 150s inactivity, desktop only (CSS hides on mobile).
+  // A tab parked deliberately is a good sign, so returning to the tab counts
+  // as activity and resets the clock rather than landing on the card.
   const resetIdle = useCallback(() => {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     setIdleActive(false);
@@ -908,9 +1001,14 @@ export default function Home() {
   useEffect(() => {
     resetIdle();
     const events = ["mousemove", "mousedown", "keydown", "touchstart"] as const;
-    events.forEach((ev) => window.addEventListener(ev, resetIdle));
+    events.forEach((ev) => window.addEventListener(ev, resetIdle, { passive: true }));
+    const onVisibility = () => { if (!document.hidden) resetIdle(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("focus", resetIdle);
     return () => {
       events.forEach((ev) => window.removeEventListener(ev, resetIdle));
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("focus", resetIdle);
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
   }, [resetIdle]);
@@ -930,12 +1028,12 @@ export default function Home() {
     if (!el) return;
     el.style.overflow = "hidden";
     // Animated on ratio change
-    el.style.transition = "filter 200ms ease, clip-path 600ms ease";
+    el.style.transition = "clip-path 600ms ease";
     const { width, height } = el.getBoundingClientRect();
     el.style.clipPath = getClipPath(irisRatio, width, height);
     // Resize: instant update, no clip-path transition
     const observer = new ResizeObserver(() => {
-      el.style.transition = "filter 200ms ease";
+      el.style.transition = "none";
       const { width: w, height: h } = el.getBoundingClientRect();
       el.style.clipPath = getClipPath(irisRatio, w, h);
     });
@@ -943,9 +1041,12 @@ export default function Home() {
     return () => observer.disconnect();
   }, [irisRatio]);
 
-  // Triple-click / triple-tap → film leader
-  const handleBackgroundClick = useCallback(() => {
-    if (isLeaderPlaying.current) return;
+  // Triple-click / triple-tap → film leader. It only listens on the picture
+  // itself: clicking the HUD, the name or the route to the work must never
+  // start a two-second sequence nobody asked for. Reduced motion opts out.
+  const handleReelClick = useCallback((e: React.MouseEvent) => {
+    if (shouldReduceMotion || isLeaderPlaying.current) return;
+    if ((e.target as HTMLElement).closest("a, button")) return;
     const now = Date.now();
     clickTimestamps.current = [...clickTimestamps.current, now].filter(
       (t) => now - t < 600
@@ -955,39 +1056,41 @@ export default function Home() {
       isLeaderPlaying.current = true;
       setFilmLeader(true);
     }
-  }, []);
+  }, [shouldReduceMotion]);
 
   return (
     <main
       id="main-content"
-      onClick={handleBackgroundClick}
       style={{
         position: "relative",
         width: "100vw",
-        height: "100vh",
+        height: "100dvh",
         overflow: "hidden",
         background: "#0C0C0C",
-        userSelect: "none",
-        WebkitUserSelect: "none",
       }}
     >
       {/* ── Slate ── */}
       <AnimatePresence>{showSlate && <Slate onDone={handleSlateDone} />}</AnimatePresence>
 
-      {/* ── Video + false-colour wrapper ── */}
+      {/* ── The picture, and everything that belongs to it ──
+           The scrims and framelines live inside the matted wrapper, so when
+           IRIS mattes to 2.39:1 the bars are actual black bars rather than a
+           gradient smudge running past the edge of the frame. */}
       <motion.div
         ref={videoWrapperRef}
+        onClick={handleReelClick}
         initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
         animate={{ opacity: videoReady ? 1 : 0 }}
         transition={{ duration: shouldReduceMotion ? 0 : 1.4, ease: "easeInOut" }}
         style={{
           position: "absolute",
           inset: 0,
-          filter: falseColour
-            ? "hue-rotate(90deg) saturate(4) contrast(1.4) brightness(0.9)"
-            : "none",
-          transition: "filter 200ms ease",
           zIndex: 1,
+          // The still stands in whenever the player can't: blocked embed,
+          // refused autoplay, slow network. The page is never empty.
+          backgroundImage: "url(/images/reel-poster.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <div
@@ -1000,51 +1103,54 @@ export default function Home() {
             minWidth: "100%",
             height: "56.25vw",
             minHeight: "100%",
+            opacity: reelState === "playing" ? 1 : 0,
+            transition: "opacity 900ms ease",
           }}
         >
           <iframe
+            ref={iframeRef}
             src="https://player.vimeo.com/video/1057090009?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1"
+            title="Ben Kaufman — showreel"
+            tabIndex={-1}
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none", pointerEvents: "none" }}
             allow="autoplay; fullscreen"
             allowFullScreen
           />
         </div>
-        {/* False colour gradient overlay */}
-        <FalseColourOverlay active={falseColour} />
+
+        {/* Top scrim — nav legibility */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            height: "200px",
+            background: "linear-gradient(to bottom, rgba(12,12,12,0.78) 0%, rgba(12,12,12,0.3) 65%, transparent 100%)",
+            pointerEvents: "none",
+            zIndex: 8,
+          }}
+        />
+
+        {/* Bottom scrim — hero legibility */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to top, rgba(12,12,12,0.94) 0%, rgba(12,12,12,0.55) 40%, rgba(12,12,12,0.08) 70%, transparent 100%)",
+            pointerEvents: "none",
+            zIndex: 3,
+          }}
+        />
+
+        {/* Framelines — 1px markers at 10vh / 10vh-from-bottom */}
+        <div className="frameline frameline-top" />
+        <div className="frameline frameline-bottom" />
       </motion.div>
-
-      {/* ── Top gradient protection (nav legibility) ── */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0, left: 0, right: 0,
-          height: "200px",
-          background: "linear-gradient(to bottom, rgba(12,12,12,0.78) 0%, rgba(12,12,12,0.3) 65%, transparent 100%)",
-          pointerEvents: "none",
-          zIndex: 8,
-        }}
-      />
-
-      {/* ── Bottom gradient (hero text legibility) ── */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(to top, rgba(12,12,12,0.94) 0%, rgba(12,12,12,0.55) 40%, rgba(12,12,12,0.08) 70%, transparent 100%)",
-          pointerEvents: "none",
-          zIndex: 3,
-        }}
-      />
-
-      {/* ── Framelines — 1px markers at 10vh / 10vh-from-bottom ── */}
-      <div className="frameline frameline-top" />
-      <div className="frameline frameline-bottom" />
 
       {/* ── ARRI HUD ── */}
       <ArriHUD
         visible={videoReady}
-        falseColour={falseColour}
-        onTCClick={handleTCClick}
         irisRatio={irisRatio}
         onIrisClick={handleIrisClick}
       />
@@ -1080,6 +1186,45 @@ export default function Home() {
         >
           Ben Kaufman
         </motion.h1>
+
+        {/* The way in. A slate card names the reel and what follows it; this
+            page had no route to the work at all until it did. */}
+        <motion.div
+          initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
+          animate={{ opacity: videoReady ? 1 : 0 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: "easeOut", delay: shouldReduceMotion ? 0 : 1.2 }}
+          style={{ marginTop: "18px", display: "flex", alignItems: "baseline", gap: "14px" }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-ui)",
+              fontSize: "10px",
+              letterSpacing: "0.38em",
+              textTransform: "uppercase",
+              color: "rgba(232,228,220,0.55)",
+            }}
+          >
+            Executive Producer
+          </span>
+          <span aria-hidden="true" style={{ width: "18px", height: "1px", background: "#8B6914", opacity: 0.7 }} />
+          <Link
+            href="/commercials"
+            data-cursor="nav"
+            className="hero-route"
+            style={{
+              fontFamily: "var(--font-ui)",
+              fontSize: "11px",
+              letterSpacing: "0.28em",
+              textTransform: "uppercase",
+              color: "#E8E4DC",
+              textDecoration: "none",
+              opacity: 0.85,
+              transition: "opacity 400ms ease",
+            }}
+          >
+            Selected work — 28 films
+          </Link>
+        </motion.div>
       </div>
 
       {/* ── Quiet on Set idle overlay ── */}
@@ -1120,6 +1265,7 @@ export default function Home() {
           .hero-block { left: 24px !important; right: 24px !important; }
           .hero-name { white-space: normal !important; line-height: 0.95 !important; }
         }
+        .hero-route:hover, .hero-route:focus-visible { opacity: 1 !important; }
         /* Desktop shows all HUD items; mobile shows only the simplified ones */
         .hud-mobile-only { display: none; }
         .hud-mobile-bottom { display: none; }

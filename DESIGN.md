@@ -339,11 +339,25 @@ Plain text at 13px Helvetica, 0.05em, no underline, no icon, 70% opacity rising 
 ### The Cursor (signature)
 The system cursor is disabled globally (`cursor: none !important`) and replaced by a five-part instrument: a 40px ring at 40% opacity rotating once every 8 seconds and lerping toward the pointer at 0.15; a 6px parchment dot pinned to the exact pointer position; and three trail dots (4/3/2px) chained at 0.09 / 0.055 / 0.032 lerp that only become visible above a velocity threshold and scale their opacity with speed. Context changes it: 80px and fully opaque with the word PLAY over a thumbnail or HOME over the logo, 20px with a gold dot over navigation, 60% opacity with a translucent fill over the headshot. Mousedown emits an 80px ring that expands and fades over 600ms.
 
+### The Reel (signature — home only)
+The picture fills the viewport in a 16:9 cover crop, and **everything that belongs to the picture lives inside it**: both scrims and both framelines are children of the matted wrapper, so when IRIS mattes to 2.39:1 the bars are real black bars rather than a gradient running past the edge of the frame.
+
+The reel reports for itself. Until the Vimeo player emits `play`, a still frame from the reel holds the page; the player crossfades in over 900ms once it is actually running, and a 4s fallback settles the state either way. A blocked embed, a refused autoplay or a dead network all end at the same place — the poster, the HUD and the name — and never at an empty black rectangle.
+
+Beneath the name, one permanent route to the work: the role line, a gold hairline, and `SELECTED WORK — 28 FILMS` as a link. It is a slate card, not a call to action, and it is the only thing on the page that points anywhere.
+
 ### The HUD (signature — home only)
-An 82%-opacity overlay of camera telemetry: FPS, SHUTTER (drifting ±0.3 every 8–14s, eased over 600ms), IRIS, EI, ND, WB along the top; FCL, PWR (dropping 0.1V every 20–30s), reel/clip ID, MEDIA and a live 24fps timecode starting at 01:07:23:00 along the bottom; EVF and CAM pill stacks down the left edge in translucent grey boxes. A STBY dot pulses green for ten seconds, then goes solid REC red. Two readouts are live controls: IRIS cycles the frame between 16:9, 2.39:1 and 1.85:1 via a symmetric `clip-path` inset animated over 600ms, and TC triggers a 2.1s false-colour pass over the reel. On mobile it reduces to FPS, TC, the REC indicator and PWR.
+An 82%-opacity overlay of camera telemetry: FPS, SHUTTER (drifting ±0.3 every 8–14s, eased over 600ms), IRIS, EI, ND, WB along the top; FCL, PWR (dropping 0.1V every 20–30s), reel/clip ID, MEDIA and a live 24fps timecode starting at 01:07:23:00 along the bottom; EVF and CAM pill stacks down the left edge in translucent grey boxes. A STBY dot pulses green for ten seconds, then goes solid REC red. **A monitor's HUD is read, not clicked** — with one exception. IRIS is a real `<button>` with an accessible name and a focus state, because matting a frame between 16:9, 2.39:1 and 1.85:1 is a genuine film-craft gesture; it animates a symmetric `clip-path` inset over 600ms. Every other readout is a display and nothing more. On mobile it reduces to FPS, TC, the REC indicator and PWR.
 
 ### Cinematic Easter Eggs (signature)
-Three hidden sequences, all diegetic, all on the home page. A once-per-session slate (`BENKAUFMAN.CO` in italic Cormorant on black, 420ms). A triple-click film leader: white flash, then an Academy countdown from 8 to 2 on hard 220ms cuts inside a 40vmin circle with LFOA / SYNC / BK A 001 corner marks, a 1kHz two-pop at frame 2, cut to black, fade out — 2.09s total. The Konami code opens a "Director's Cut" title card. After 150s idle on desktop, a `QUIET ON SET` card fades up over 1.2s with a pulsing `[ ANY KEY TO CONTINUE ]`.
+Four hidden sequences, all diegetic, all on the home page — and every one of them interruptible, keyboard-safe and silent under reduced motion.
+
+- **Slate:** once per session, `BENKAUFMAN.CO` in italic Cormorant, 420ms. Storage failures are caught, so a private-mode browser never gets stuck behind it.
+- **Film leader:** three clicks **on the picture** within 600ms — never on the HUD, the name or the route to the work. Its countdown numeral and the circle around it are sized to the frame (`clamp(4rem, 20vmin, 12rem)` inside a 40vmin circle), not to the type ramp: an Academy leader is measured against the frame it is printed on, and this is the one place in the system where type is a picture element rather than a role. White flash, an Academy count from 8 to 2 on hard 220ms cuts, a 1kHz two-pop from the one shared AudioContext, cut to black, 2.09s total. Escape or any click aborts it, and `prefers-reduced-motion` skips it entirely, audio included.
+- **Director's Cut:** the Konami code. It can only be opened from the keyboard, so it is a real dialog — `role="dialog"`, `aria-modal`, focus moved to its own dismiss control, focus returned on close, Escape closes.
+- **Quiet on Set:** after 150s idle on desktop. It sits *below* the header, so it quiets the reel without ever covering the only route to the work, and returning to the tab counts as activity — a deliberately parked tab never comes back to it.
+
+**The diegetic test governs the copy too.** Nothing in these sequences says anything a camera, projector or lens would not: no "Konami code activated", no "click to dismiss".
 
 ## Do's and Don'ts
 
@@ -354,7 +368,7 @@ Three hidden sequences, all diegetic, all on the home page. A once-per-session s
 - **Do** set every corner to 0 radius; reserve circles for optics and signals.
 - **Do** reserve Cormorant Garamond for proper nouns, and JetBrains Mono for readings a machine would produce.
 - **Do** keep transitions between 200ms and 1400ms on `ease` / `easeOut`, and stagger grid entrances at 40ms.
-- **Do** honour `prefers-reduced-motion` by skipping the projector warm-up, the scale transitions and the staggers — every component already branches on `useReducedMotion()`.
+- **Do** honour `prefers-reduced-motion` in the component, not only in CSS. The global rule in [globals.css](app/globals.css) neutralises CSS transitions and keyframes, but it has no effect on Framer Motion's JS animations or on a `requestAnimationFrame` loop — those must branch on `useReducedMotion()` themselves. Every animated component on the home reel, the commercials grid and the photography grid now does.
 - **Do** carry `data-cursor` on any new interactive surface so the custom cursor knows what it is over.
 - **Do** measure the real header height at runtime when padding a page beneath it.
 - **Do** keep new effects diegetic: if a camera, a projector or a lens doesn't do it, it doesn't belong.

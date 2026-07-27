@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-27T18:35:02Z",
+  "generatedAt": "2026-07-27T19:16:16Z",
   "title": "Design System: Ben Kaufman — Executive Producer",
   "extensions": {
     "colorMeta": {
@@ -503,10 +503,11 @@
       "Do set every corner to 0 radius; reserve circles for optics and signals.",
       "Do reserve Cormorant Garamond for proper nouns, and JetBrains Mono for readings a machine would produce.",
       "Do keep transitions between 200ms and 1400ms on ease / easeOut, and stagger grid entrances at 40ms.",
-      "Do honour prefers-reduced-motion by skipping the projector warm-up, the scale transitions and the staggers — every component already branches on useReducedMotion().",
       "Do carry data-cursor on any new interactive surface so the custom cursor knows what it is over.",
       "Do measure the real header height at runtime when padding a page beneath it.",
-      "Do keep new effects diegetic: if a camera, a projector or a lens doesn't do it, it doesn't belong."
+      "Do keep new effects diegetic: if a camera, a projector or a lens doesn't do it, it doesn't belong.",
+      "Do honour prefers-reduced-motion in the component, not only in CSS. The global rule neutralises CSS transitions and keyframes but has no effect on Framer Motion's JS animations or on a requestAnimationFrame loop — those must branch on useReducedMotion() themselves.",
+      "Do let the picture report for itself: a still frame holds the page until the player says it is running, and a fallback settles the state either way. No surface is ever an empty black rectangle."
     ],
     "donts": [
       "Don't introduce box-shadow, border-radius, pure #000 surfaces or pure #FFF text.",
@@ -518,7 +519,9 @@
       "Don't restore the system cursor with cursor: pointer on new elements; the global rule is cursor: none.",
       "Don't add spring physics, bounce easing, parallax or scroll-jacking. Slow cinema, not app UI.",
       "Don't put a page title above a grid. The work identifies itself; the h1 stays screen-reader-only.",
-      "Don't let it drift toward an agency template, a SaaS product page, a stock-photography portfolio theme, or an effects-for-their-own-sake reel site."
+      "Don't let it drift toward an agency template, a SaaS product page, a stock-photography portfolio theme, or an effects-for-their-own-sake reel site.",
+      "Don't make a HUD readout clickable. A monitor's telemetry is read by an operator, never clicked by an audience — IRIS is the single exception, and it is a real button because matting a frame is a real gesture.",
+      "Don't ship an interruption a visitor can't escape: every hidden sequence takes Escape, and none of them emits audio or motion under prefers-reduced-motion."
     ]
   }
 }

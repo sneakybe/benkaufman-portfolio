@@ -43,11 +43,20 @@ export const metadata: Metadata = {
     url: "https://benkaufman.co",
     siteName: "Ben Kaufman",
     type: "website",
+    images: [
+      {
+        url: "/images/reel-poster.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "Ben Kaufman — showreel",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ben Kaufman — Executive Producer",
     description: "Commercial film portfolio.",
+    images: ["/images/reel-poster.jpg"],
   },
 };
 

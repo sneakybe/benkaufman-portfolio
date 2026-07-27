@@ -97,7 +97,8 @@ function GridItem({
   // Title is revealed on engagement; it stays put when the thumbnail never arrived,
   // so a failed tile still identifies itself instead of reading as dead.
   const titleVisible = engaged || data.status === "error";
-  const displayTitle = data.title ? project.title : project.title;
+  // The authored title always wins; Vimeo titles carry slate junk.
+  const displayTitle = project.title;
 
   return (
     <motion.a
