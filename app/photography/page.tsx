@@ -64,14 +64,24 @@ function PhotoCard({
       initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.7, ease: "easeOut", delay: shouldReduceMotion ? 0 : (index % 12) * 0.04 }}
+      role="button"
+      tabIndex={0}
+      aria-label={`View photograph — ${photo.title}`}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         position: "relative",
         display: "block",
         overflow: "hidden",
-        cursor: "none",
         background: "#0a0a0a",
         breakInside: "avoid",
         marginBottom: 0,
@@ -144,18 +154,45 @@ function Lightbox({
   onPrev: () => void;
   onNext: () => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Focus moves in on open, is cycled inside, and is handed back on close.
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "ArrowRight") onNext();
-    };
-    window.addEventListener("keydown", onKey);
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
     document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      previouslyFocused?.focus?.();
     };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key === "ArrowLeft") { onPrev(); return; }
+      if (e.key === "ArrowRight") { onNext(); return; }
+      if (e.key !== "Tab") return;
+
+      const root = dialogRef.current;
+      if (!root) return;
+      const focusable = Array.from(root.querySelectorAll<HTMLElement>("button"));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (e.shiftKey && (active === first || !root.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [onClose, onPrev, onNext]);
 
   const shouldReduceMotion = useReducedMotion();
@@ -163,6 +200,10 @@ function Lightbox({
 
   return (
     <motion.div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${photo.title} — photograph ${currentIndex + 1} of ${photos.length}`}
       initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: shouldReduceMotion ? 1 : 0 }}
@@ -250,8 +291,9 @@ function Lightbox({
 
       {/* Close */}
       <button
+        ref={closeRef}
         onClick={onClose}
-        aria-label="Close"
+        aria-label="Close photograph"
         style={{
           position: "fixed",
           top: "32px",
@@ -262,7 +304,6 @@ function Lightbox({
           fontSize: "20px",
           padding: "8px",
           transition: "opacity 300ms ease",
-          cursor: "none",
         }}
         onMouseEnter={(e) => ((e.target as HTMLElement).style.opacity = "1")}
         onMouseLeave={(e) => ((e.target as HTMLElement).style.opacity = "0.5")}
@@ -273,7 +314,7 @@ function Lightbox({
       {/* Prev */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        aria-label="Previous"
+        aria-label="Previous photograph"
         style={{
           position: "fixed",
           left: "28px",
@@ -285,7 +326,6 @@ function Lightbox({
           fontSize: "22px",
           padding: "12px",
           transition: "opacity 300ms ease",
-          cursor: "none",
         }}
         onMouseEnter={(e) => ((e.target as HTMLElement).style.opacity = "1")}
         onMouseLeave={(e) => ((e.target as HTMLElement).style.opacity = "0.35")}
@@ -296,7 +336,7 @@ function Lightbox({
       {/* Next */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        aria-label="Next"
+        aria-label="Next photograph"
         style={{
           position: "fixed",
           right: "28px",
@@ -308,7 +348,6 @@ function Lightbox({
           fontSize: "22px",
           padding: "12px",
           transition: "opacity 300ms ease",
-          cursor: "none",
         }}
         onMouseEnter={(e) => ((e.target as HTMLElement).style.opacity = "1")}
         onMouseLeave={(e) => ((e.target as HTMLElement).style.opacity = "0.35")}

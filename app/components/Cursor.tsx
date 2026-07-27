@@ -24,12 +24,33 @@ export default function Cursor() {
   const prevPos = useRef({ x: -200, y: -200, ts: 0 });
   const velocity = useRef(0);
   const raf = useRef<number>(0);
+  const magnets = useRef<{ el: HTMLElement; cx: number; cy: number }[]>([]);
 
   const [state, setState] = useState<CursorState>("default");
   const [visible, setVisible] = useState(false);
 
+  // The custom cursor replaces the OS pointer, so it only runs where a real
+  // pointer exists and where the visitor hasn't asked for reduced motion.
+  // Everywhere else the system cursor stays exactly where it was.
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setEnabled(fine.matches && !calm.matches);
+    update();
+    fine.addEventListener("change", update);
+    calm.addEventListener("change", update);
+    return () => {
+      fine.removeEventListener("change", update);
+      calm.removeEventListener("change", update);
+    };
+  }, []);
+
   // ── Mouse tracking + state detection ──────────────────────────────────────
   useEffect(() => {
+    if (!enabled) return;
+
     const onMove = (e: MouseEvent) => {
       const now = performance.now();
       const dt = now - prevPos.current.ts;
@@ -85,16 +106,33 @@ export default function Cursor() {
       document.documentElement.removeEventListener("mouseleave", onLeave);
       document.documentElement.removeEventListener("mouseenter", onEnter);
     };
-  }, [visible]);
+  }, [visible, enabled]);
 
   // ── RAF loop: lerp, trail, magnetic ───────────────────────────────────────
   useEffect(() => {
+    if (!enabled) return;
+
     const LERP_OUTER = 0.15;
     const LERP_T1 = 0.09;
     const LERP_T2 = 0.055;
     const LERP_T3 = 0.032;
     const MAG_R = 60;
     const MAG_STR = 6;
+    const MAG_SELECTOR = "header a, header button, nav a, nav button";
+
+    const refreshMagnets = () => {
+      magnets.current = Array.from(
+        document.querySelectorAll<HTMLElement>(MAG_SELECTOR)
+      ).map((el) => {
+        const rect = el.getBoundingClientRect();
+        return { el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
+      });
+    };
+
+    refreshMagnets();
+    const remeasure = setInterval(refreshMagnets, 1000);
+    window.addEventListener("resize", refreshMagnets);
+    window.addEventListener("scroll", refreshMagnets, { passive: true });
 
     const tick = () => {
       const mx = mouse.current.x;
@@ -148,14 +186,10 @@ export default function Cursor() {
 
       // ── Magnetic pull ───────────────────────────────────────────────────
       // Only on nav links + buttons (not thumbnails — they have their own
-      // scale transform and are too large for the effect to read well)
-      const magnetics = document.querySelectorAll<HTMLElement>(
-        "header a, header button, nav a, nav button"
-      );
-      magnetics.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
+      // scale transform and are too large for the effect to read well).
+      // Centres are cached: measuring them inside the frame loop forces a
+      // synchronous layout 60 times a second.
+      magnets.current.forEach(({ el, cx, cy }) => {
         const dx = mx - cx;
         const dy = my - cy;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -181,12 +215,15 @@ export default function Cursor() {
     raf.current = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf.current);
+      clearInterval(remeasure);
+      window.removeEventListener("resize", refreshMagnets);
+      window.removeEventListener("scroll", refreshMagnets);
       // Reset any magnetic offsets on unmount
-      document.querySelectorAll<HTMLElement>(
-        "header a, header button, nav a, nav button"
-      ).forEach((el) => el.style.removeProperty("translate"));
+      document.querySelectorAll<HTMLElement>(MAG_SELECTOR).forEach((el) =>
+        el.style.removeProperty("translate")
+      );
     };
-  }, []);
+  }, [enabled]);
 
   // ── Derived styles ─────────────────────────────────────────────────────────
   const outerSize = state === "play" || state === "logo" ? 80 : state === "nav" ? 20 : 40;
@@ -197,6 +234,8 @@ export default function Cursor() {
     state === "play" ? "PLAY" :
     state === "logo" ? "HOME" :
     null;
+
+  if (!enabled) return null;
 
   return (
     <>
