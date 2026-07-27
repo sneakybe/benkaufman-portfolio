@@ -7,6 +7,7 @@ colors:
   surface-deep: "#0a0a0a"
   hairline: "#2a2a2a"
   parchment: "#E8E4DC"
+  parchment-read: "#B1AEA8"
   muted: "#888888"
   muted-deep: "#666666"
   tungsten-gold: "#8B6914"
@@ -15,38 +16,56 @@ colors:
   stby-green: "#00C16E"
 typography:
   display:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
-    fontSize: "8vw"
+    fontFamily: "Cormorant Garamond, Times New Roman, serif"
+    fontSize: "clamp(2.75rem, 8vw, 7.25rem)"
     fontWeight: 300
     lineHeight: 0.9
     letterSpacing: "0.04em"
   headline:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
-    fontSize: "clamp(32px, 4vw, 64px)"
+    fontFamily: "Cormorant Garamond, Times New Roman, serif"
+    fontSize: "clamp(2rem, 4vw, 4rem)"
     fontWeight: 300
     lineHeight: 0.92
     letterSpacing: "0.02em"
   title:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
+    fontFamily: "Cormorant Garamond, Times New Roman, serif"
     fontSize: "clamp(20px, 2.5vw, 28px)"
     fontWeight: 300
     lineHeight: 1.1
     letterSpacing: "0.02em"
-  body:
-    fontFamily: "DM Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
-    fontSize: "16px"
+  title-inset:
+    fontFamily: "Cormorant Garamond, Times New Roman, serif"
+    fontSize: "18px"
     fontWeight: 300
-    lineHeight: 1.8
+    lineHeight: 1.2
+    letterSpacing: "0.04em"
+  lockup:
+    fontFamily: "Cormorant Garamond, Times New Roman, serif"
+    fontSize: "19px"
+    fontWeight: 600
+    lineHeight: 1.1
+    letterSpacing: "0.17em"
+  body:
+    fontFamily: "Archivo, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: 1.65
     letterSpacing: "normal"
+  link:
+    fontFamily: "Archivo, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: "0.05em"
   label:
-    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontFamily: "Archivo, Helvetica Neue, Helvetica, Arial, sans-serif"
     fontSize: "11px"
     fontWeight: 400
     lineHeight: 1
     letterSpacing: "0.25em"
   caption:
-    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif"
-    fontSize: "9px"
+    fontFamily: "Archivo, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: "10px"
     fontWeight: 400
     lineHeight: 1
     letterSpacing: "0.35em"
@@ -56,6 +75,24 @@ typography:
     fontWeight: 600
     lineHeight: 1.4
     letterSpacing: "0.06em"
+  data-caption:
+    fontFamily: "JetBrains Mono, ui-monospace, monospace"
+    fontSize: "10px"
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: "0.3em"
+  telemetry:
+    fontFamily: "JetBrains Mono, ui-monospace, monospace"
+    fontSize: "9px"
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: "0.08em"
+  glyph:
+    fontFamily: "Archivo, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: "22px"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "0.05em"
 rounded:
   none: "0px"
   hair: "1px"
@@ -81,12 +118,15 @@ components:
   nav-link-mobile-active:
     textColor: "{colors.tungsten-gold}"
     typography: "{typography.headline}"
+  logo-lockup:
+    textColor: "{colors.parchment}"
+    typography: "{typography.lockup}"
   work-tile:
     backgroundColor: "{colors.surface}"
     rounded: "{rounded.none}"
   work-tile-client:
-    textColor: "{colors.tungsten-gold}"
-    typography: "{typography.caption}"
+    textColor: "{colors.parchment}"
+    typography: "{typography.label}"
   work-tile-title:
     textColor: "{colors.parchment}"
     typography: "{typography.title}"
@@ -103,17 +143,17 @@ components:
     padding: "8px 0"
   close-button:
     textColor: "{colors.parchment}"
+    typography: "{typography.glyph}"
     rounded: "{rounded.none}"
     padding: "8px"
-    size: "24px"
   lightbox-arrow:
     textColor: "{colors.parchment}"
+    typography: "{typography.glyph}"
     rounded: "{rounded.none}"
     padding: "12px"
-    size: "22px"
   contact-link:
     textColor: "{colors.parchment}"
-    typography: "{typography.body}"
+    typography: "{typography.link}"
     rounded: "{rounded.none}"
   gold-rule:
     backgroundColor: "{colors.tungsten-gold}"
@@ -135,19 +175,20 @@ The site is emphatically not a creative-agency template, a SaaS product page, a 
 
 **Key Characteristics:**
 - Near-black void (#0C0C0C), warm parchment text (#E8E4DC), one dark gold accent used at hairline scale
-- Cormorant Garamond 300 for names and titles only; Helvetica Neue for UI; DM Sans for prose; JetBrains Mono for machine data
+- Three families, three jobs: Cormorant Garamond for proper nouns, Archivo for the interface, JetBrains Mono for machine data
 - Zero corner radius everywhere except literal optics (rings, dots, the countdown circle)
 - No shadows in the entire system — depth is scrim, grain, vignette and defocus
 - Edge-to-edge grids separated by a single 1px hairline, never gutters or cards
 - Slow motion: 200–1400ms, `ease` and `easeOut`, no springs, no bounce
-- A custom cursor replaces the system cursor globally (`cursor: none !important`)
+- A custom cursor replaces the system cursor wherever a fine pointer exists and reduced motion is not requested
+- A 10px floor on all interface type; only the home HUD's telemetry is allowed below it
 
 ## Colors
 
 A single warm-neutral value scale in near-darkness, one gold accent, and a small set of instrument-accurate signal colours borrowed from a camera's own display.
 
 ### Primary
-- **Tungsten Gold** (#8B6914): The only accent in the system, named for 3200K practical light. It appears as the 1px divider on About, the client label above a project title, the active item in the mobile menu, the focus-visible ring, and the text-selection background. It is never a fill, never a button, never a large area.
+- **Tungsten Gold** (#8B6914): The only accent in the system, named for 3200K practical light. It appears as the 1px divider on About, the 16px hairline above an engaged tile's title, the active item in the mobile menu, the focus-visible ring, and the text-selection background. It is never a fill, never a button, never a large area.
 
 ### Neutral
 - **Void** (#0C0C0C): The page ground everywhere. Deliberately not #000 — pure black would flatten the grain and kill the sense of a lit room.
@@ -155,8 +196,9 @@ A single warm-neutral value scale in near-darkness, one gold accent, and a small
 - **Surface** (#111111): The bed behind a commercial thumbnail before its Vimeo frame arrives.
 - **Hairline** (#2a2a2a): Shows through the 1px row gaps of the commercials grid. It is a seam between frames, not a border around them.
 - **Parchment** (#E8E4DC): All primary text, the custom cursor, the framelines. Warm off-white — never pure white for reading.
+- **Reading Parchment** (#B1AEA8): Parchment at reading strength for the one paragraph of prose on the site. Set as a value, not an opacity, so its 8.8:1 contrast is auditable in the source and cannot stack with a parent.
 - **Muted** (#888888): Secondary metadata.
-- **Deep Muted** (#666666): The quietest legible label — the "CONTACT" eyebrow on About.
+- **Deep Muted** (#666666): Reserved for text that must recede below the muted step. No longer used for any label — the "CONTACT" eyebrow moved up to Muted at 5.1:1.
 
 ### Tertiary — Instrument Signals
 These four are quoted from a real camera display, not chosen as brand colours. They exist only inside the home-page HUD and its overlays.
@@ -174,29 +216,38 @@ These four are quoted from a real camera display, not chosen as brand colours. T
 
 ## Typography
 
-**Display Font:** Cormorant Garamond (300, with Georgia / serif fallback)
-**Body Font:** DM Sans (300, with Helvetica Neue fallback)
-**UI Font:** Helvetica Neue (Helvetica, Arial, sans-serif)
-**Data Font:** JetBrains Mono (400/500/600)
+**Serif — proper nouns:** Cormorant Garamond (300 for display, 600 for the lockup, plus a real italic cut)
+**Interface — everything functional:** Archivo (400/500)
+**Data — machine readings:** JetBrains Mono (400/500/600/700)
 
-**Character:** A high-contrast light serif carries every proper noun — the name, the project titles, the photograph captions — and it is the only voice in the system with any warmth. Everything functional is neutral Helvetica at 9–11px with 0.25–0.4em tracking, so wide it reads as spacing rather than as words. The mono is a third voice entirely: machine-generated readings, tight and mechanical. Four families sounds like a lot until you notice each one only ever says one kind of thing.
+Three families, three jobs, and every call site references a role token — `var(--font-serif)`, `var(--font-ui)`, `var(--font-data)` — never a family name. Changing the interface face is one edit in [app/globals.css](app/globals.css), not sixteen.
+
+**Character:** A high-contrast serif carries every proper noun — the name, the title of a work — and it is the only voice in the system with any warmth. Everything functional is Archivo at 10–13px with 0.25–0.4em tracking, so wide it reads as spacing rather than as words; Archivo is drawn for small sizes, and its slightly heavier stems and open apertures are what survive at a 1px stem on near-black. The mono is a third voice entirely: machine-generated readings, tight and mechanical. Each family only ever says one kind of thing — which is why there is no fourth. Prose is set in the interface face, because one paragraph is not a kind of thing.
 
 ### Hierarchy
-- **Display** (300, 8vw, line-height 0.9, 0.04em, uppercase): The hero name, once per site, bottom-left of the home reel.
-- **Headline** (300, clamp(32px, 4vw, 64px), 0.92, 0.02em, uppercase): The About name, the mobile menu items, the overlay titles.
-- **Title** (300 *italic*, clamp(20px, 2.5vw, 28px), 1.1, 0.02em): Project titles on hover, photograph titles. The italic is the tell that a title is a work, not a heading.
-- **Body** (DM Sans 300, 16px, 1.8, max-width 480px, 75% opacity): Prose. There is exactly one paragraph of it on the whole site.
-- **Label** (Helvetica 400, 11px, 0.25em, uppercase): Navigation, the skip link.
-- **Caption** (Helvetica 400, 9px, 0.3–0.4em, uppercase): The "EXECUTIVE PRODUCER" line, client names, the CONTACT eyebrow, the SELECTED WORK footnote.
-- **Data** (JetBrains Mono, 9–13px, 0.06–0.1em): Timecode, HUD readouts, the lightbox counter (`04 / 34`), the CREDITS toggle and its panel.
+- **Display** (300, clamp(2.75rem, 8vw, 7.25rem), line-height 0.9, 0.04em, uppercase): The hero name, once per site, bottom-left of the home reel. The rem floor keeps it the largest element on a phone and under browser zoom, where a bare `vw` value silently shrank below the navigation.
+- **Headline** (300, clamp(2rem, 4vw, 4rem), 0.92, 0.02em, uppercase): The About name and the full-screen overlay titles. The mobile menu shares the ramp at 8vw.
+- **Title** (300 *italic*, clamp(20px, 2.5vw, 28px), 1.1, 0.02em): The name of a work on a tile. The italic is the tell that a title is a work, not a heading — which is why the italic ships as a real cut and is never left to the browser to shear.
+- **Title (inset)** (300 *italic*, 18px, 0.04em): The same role inside a lightbox, where the artefact already has the visitor's attention. One value across both lightboxes.
+- **Lockup** (600, 19px, 0.17em, uppercase): The header identity only. 600 rather than 300 because at 19px a 300-weight hairline measures 0.34px — below what a screen can draw, so the stroke contrast that justifies this face is the first thing lost.
+- **Body** (Archivo 400, 16px, 1.65, max-width 480px, #B1AEA8): Prose. Exactly one paragraph on the site, at a 66-character measure.
+- **Link** (Archivo 400, 13px, 0.05em): Contact links, set as plain text.
+- **Label** (Archivo 400, 11px, 0.25em, uppercase): Navigation, the skip link, and the client name — the credential sits in the label tier because it identifies, it doesn't caption.
+- **Caption** (Archivo 400, 10px, 0.3–0.4em, uppercase): The "EXECUTIVE PRODUCER" line, frame numbers, the CONTACT eyebrow, the SELECTED WORK footnote.
+- **Data** (JetBrains Mono, 10–13px): Counters, credit blocks, the CREDITS toggle, CUEING. 600 and 700 are loaded, so no HUD weight is ever synthesised.
+- **Telemetry** (JetBrains Mono 400, 9px, 0.08em): The home HUD only. The one place where too small to read comfortably is the correct answer.
 
 ### Named Rules
 
-**The Serif-Speaks-Once Rule.** Cormorant is for proper nouns — the name, and the title of a work. It never runs a sentence, never labels a control, never appears below 13px.
+**The Serif-Speaks-Once Rule.** Cormorant is for proper nouns — the name, and the title of a work. It never runs a sentence and never labels a control. Below ~15px it needs weight 400 or more: its x-height is 0.386em, so 13px Cormorant is optically a 9px face.
 
 **The Machine Voice Rule.** JetBrains Mono is reserved for readings a machine would produce: timecode, frame IDs, counters, credit blocks pulled from Vimeo. Never prose, never navigation, never a heading.
 
-**The Wide-Small Rule.** Functional type gets smaller and wider together. At 9px the tracking is 0.3–0.4em; at 11px it is 0.25em. Small type is never set tight — the space is what makes it legible against a moving image.
+**The Wide-Small Rule.** Functional type gets smaller and wider together. At 10px the tracking is 0.3–0.4em; at 11px it is 0.25–0.28em. Small type is never set tight — the space is what makes it legible against a moving image.
+
+**The Ten-Pixel Floor Rule.** Nothing in the interface is set below 10px. The single exception is the home HUD's telemetry at 9px, quarantined exactly like the instrument colours: a camera renders telemetry at telemetry size, and that is the whole point of it.
+
+**The Rem-Floor Rule.** Every fluid size is a `clamp()` whose minimum is in `rem`. A bare `vw` value does not respond to browser zoom — the layout viewport shrinks by the same factor the unit grows — so display type set in pure `vw` is the one element on a page that a low-vision visitor cannot enlarge.
 
 ## Layout
 
@@ -264,7 +315,7 @@ Fixed header, transparent over the home reel and #0C0C0C on every other page. Th
 ### Work Tile
 A 16:9 Vimeo frame on a #111111 bed with a two-digit frame number bottom-right at 40% opacity and the client name bottom-left at 9px / 0.3em — both visible at rest, so the grid reads as a numbered, attributed contact sheet before anyone touches it. The tile is an anchor to the film's own URL, so it can be tabbed to, cmd-clicked and sent.
 
-- **Caption:** the client is permanent, in parchment at 75% over a short resting scrim; the italic Cormorant title is the reveal. The client is the credential, so the credential is free and the detail is earned. Space for the title is always reserved, so nothing shifts when it appears.
+- **Caption:** the client is permanent, in the label tier at 11px / 0.28em parchment over a short resting scrim; the italic Cormorant title is the reveal. The client is the credential, so the credential is free and the detail is earned. Space for the title is always reserved, so nothing shifts when it appears.
 - **Engagement (hover or keyboard focus):** image scales to 1.03 over 400ms; the full scrim fades in over 400ms; the title rises 10px and fades in over 500ms / 400ms; a 16px Tungsten Gold hairline appears above it; the client goes to full opacity.
 - **Screened:** once a film has been opened, its frame number dims from 0.4 to 0.15 — a diegetic mark for work already seen, held for the session.
 - **Pending / failed:** a pending tile is the bare #111111 bed with its client and frame number. A tile whose thumbnail never arrived shows its title permanently and stays live — the film still plays, so the tile must never read as dead.
@@ -278,7 +329,7 @@ Full natural aspect ratio on a #0a0a0a bed, zero gap. At rest it is very slightl
 ### Lightboxes
 Two variants of the same idea: a near-opaque void backdrop with backdrop blur, the artefact centred, all controls fixed to the viewport rather than attached to the artefact.
 
-- **Commercials:** `rgba(12,12,12,0.96)` + 8px blur, fading in over 300ms; the 16:9 player scales 0.97 → 1 over 400ms after a 100ms beat, capped at `min(1100px, calc((100vh - 200px) * 16 / 9))` so a film is never clipped by the window. The projector warm-up is **driven by the player, not by a timer**: while the reel loads, the gate is held dark and a mono `CUEING` reads below the frame; the moment the player reports running, the white gate flash cuts on and off at 0, 40, 110, 150ms, a 600ms irregular flicker follows, and it locks at 800ms — with a synthesised 1.8s band-passed hum from one shared, reused AudioContext. A 4s fallback guarantees the gate never stays held. ← / → move between films and the caption below the frame names what is running — client in Helvetica caption, title in Cormorant italic, position in mono (`04 / 28`). A CREDITS toggle bottom-left slides a `rgba(0,0,0,0.85)` panel up from the bottom edge (max 33vh, mono 11px / 1.8) carrying the real Vimeo credits.
+- **Commercials:** `rgba(12,12,12,0.96)` + 8px blur, fading in over 300ms; the 16:9 player scales 0.97 → 1 over 400ms after a 100ms beat, capped at `min(1100px, calc((100vh - 200px) * 16 / 9))` so a film is never clipped by the window. The projector warm-up is **driven by the player, not by a timer**: while the reel loads, the gate is held dark and a mono `CUEING` reads below the frame; the moment the player reports running, the white gate flash cuts on and off at 0, 40, 110, 150ms, a 600ms irregular flicker follows, and it locks at 800ms — with a synthesised 1.8s band-passed hum from one shared, reused AudioContext. A 4s fallback guarantees the gate never stays held. ← / → move between films and the caption below the frame names what is running — client in Helvetica caption, title in Cormorant italic, position in mono (`04 / 28`). A CREDITS toggle bottom-left slides a deep-surface panel up from the bottom edge (`rgba(10,10,10,0.92)`, max 33vh, mono 11px / 1.8) carrying the real Vimeo credits.
 - **Photography:** `rgba(0,0,0,0.96)` + 12px blur, 250ms; image capped at 90vw / 85vh; italic Cormorant title bottom-centre with a mono `04 / 34` counter beneath it; ← / → and ✕ as bare glyphs at 35–50% opacity rising to 100% on hover over 300ms.
 - **Both:** Escape closes, arrows navigate, body scroll is locked while open. Both are real dialogs: `role="dialog"`, `aria-modal`, named by the work they contain, focus moved to the close control on open, Tab cycled inside, focus returned to the originating tile on close. With `prefers-reduced-motion`, the warm-up sequence and every scale transition are skipped entirely and the player opens locked.
 

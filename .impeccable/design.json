@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-27T17:45:00.000Z",
+  "generatedAt": "2026-07-27T18:35:02Z",
   "title": "Design System: Ben Kaufman — Executive Producer",
   "extensions": {
     "colorMeta": {
@@ -8,94 +8,338 @@
         "role": "neutral",
         "displayName": "Void",
         "canonical": "oklch(0.17 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "surface": {
         "role": "neutral",
         "displayName": "Surface",
         "canonical": "oklch(0.19 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "surface-deep": {
         "role": "neutral",
         "displayName": "Deep Surface",
         "canonical": "oklch(0.155 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "hairline": {
         "role": "neutral",
         "displayName": "Hairline",
         "canonical": "oklch(0.29 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "parchment": {
         "role": "neutral",
         "displayName": "Parchment",
         "canonical": "oklch(0.91 0.012 85)",
-        "tonalRamp": ["oklch(0.15 0.012 85)", "oklch(0.26 0.012 85)", "oklch(0.37 0.012 85)", "oklch(0.49 0.012 85)", "oklch(0.60 0.012 85)", "oklch(0.72 0.012 85)", "oklch(0.83 0.012 85)", "oklch(0.95 0.012 85)"]
+        "tonalRamp": [
+          "oklch(0.15 0.012 85)",
+          "oklch(0.26 0.012 85)",
+          "oklch(0.37 0.012 85)",
+          "oklch(0.49 0.012 85)",
+          "oklch(0.60 0.012 85)",
+          "oklch(0.72 0.012 85)",
+          "oklch(0.83 0.012 85)",
+          "oklch(0.95 0.012 85)"
+        ]
       },
       "muted": {
         "role": "neutral",
         "displayName": "Muted",
         "canonical": "oklch(0.62 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "muted-deep": {
         "role": "neutral",
         "displayName": "Deep Muted",
         "canonical": "oklch(0.49 0 0)",
-        "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.49 0 0)", "oklch(0.60 0 0)", "oklch(0.72 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"]
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.37 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.60 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.95 0 0)"
+        ]
       },
       "tungsten-gold": {
         "role": "primary",
         "displayName": "Tungsten Gold",
         "canonical": "oklch(0.52 0.09 80)",
-        "tonalRamp": ["oklch(0.15 0.09 80)", "oklch(0.26 0.09 80)", "oklch(0.37 0.09 80)", "oklch(0.49 0.09 80)", "oklch(0.60 0.09 80)", "oklch(0.72 0.09 80)", "oklch(0.83 0.09 80)", "oklch(0.95 0.09 80)"]
+        "tonalRamp": [
+          "oklch(0.15 0.09 80)",
+          "oklch(0.26 0.09 80)",
+          "oklch(0.37 0.09 80)",
+          "oklch(0.49 0.09 80)",
+          "oklch(0.60 0.09 80)",
+          "oklch(0.72 0.09 80)",
+          "oklch(0.83 0.09 80)",
+          "oklch(0.95 0.09 80)"
+        ]
       },
       "hud-amber": {
         "role": "tertiary",
         "displayName": "HUD Amber",
         "canonical": "oklch(0.84 0.17 88)",
-        "tonalRamp": ["oklch(0.15 0.17 88)", "oklch(0.26 0.17 88)", "oklch(0.37 0.17 88)", "oklch(0.49 0.17 88)", "oklch(0.60 0.17 88)", "oklch(0.72 0.17 88)", "oklch(0.83 0.17 88)", "oklch(0.95 0.17 88)"]
+        "tonalRamp": [
+          "oklch(0.15 0.17 88)",
+          "oklch(0.26 0.17 88)",
+          "oklch(0.37 0.17 88)",
+          "oklch(0.49 0.17 88)",
+          "oklch(0.60 0.17 88)",
+          "oklch(0.72 0.17 88)",
+          "oklch(0.83 0.17 88)",
+          "oklch(0.95 0.17 88)"
+        ]
       },
       "rec-red": {
         "role": "tertiary",
         "displayName": "REC Red",
         "canonical": "oklch(0.63 0.23 27)",
-        "tonalRamp": ["oklch(0.15 0.23 27)", "oklch(0.26 0.23 27)", "oklch(0.37 0.23 27)", "oklch(0.49 0.23 27)", "oklch(0.60 0.23 27)", "oklch(0.72 0.23 27)", "oklch(0.83 0.23 27)", "oklch(0.95 0.23 27)"]
+        "tonalRamp": [
+          "oklch(0.15 0.23 27)",
+          "oklch(0.26 0.23 27)",
+          "oklch(0.37 0.23 27)",
+          "oklch(0.49 0.23 27)",
+          "oklch(0.60 0.23 27)",
+          "oklch(0.72 0.23 27)",
+          "oklch(0.83 0.23 27)",
+          "oklch(0.95 0.23 27)"
+        ]
       },
       "stby-green": {
         "role": "tertiary",
         "displayName": "STBY Green",
         "canonical": "oklch(0.70 0.17 156)",
-        "tonalRamp": ["oklch(0.15 0.17 156)", "oklch(0.26 0.17 156)", "oklch(0.37 0.17 156)", "oklch(0.49 0.17 156)", "oklch(0.60 0.17 156)", "oklch(0.72 0.17 156)", "oklch(0.83 0.17 156)", "oklch(0.95 0.17 156)"]
+        "tonalRamp": [
+          "oklch(0.15 0.17 156)",
+          "oklch(0.26 0.17 156)",
+          "oklch(0.37 0.17 156)",
+          "oklch(0.49 0.17 156)",
+          "oklch(0.60 0.17 156)",
+          "oklch(0.72 0.17 156)",
+          "oklch(0.83 0.17 156)",
+          "oklch(0.95 0.17 156)"
+        ]
+      },
+      "parchment-read": {
+        "role": "neutral",
+        "displayName": "Reading Parchment",
+        "canonical": "oklch(0.72 0.011 85)",
+        "tonalRamp": [
+          "oklch(0.15 0.011 85)",
+          "oklch(0.26 0.011 85)",
+          "oklch(0.37 0.011 85)",
+          "oklch(0.49 0.011 85)",
+          "oklch(0.60 0.011 85)",
+          "oklch(0.72 0.011 85)",
+          "oklch(0.83 0.011 85)",
+          "oklch(0.95 0.011 85)"
+        ]
       }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "The hero name on the home reel. Once per site, 8vw, bottom-left inside the framelines." },
-      "headline": { "displayName": "Headline", "purpose": "The About name, mobile menu items, full-screen overlay titles." },
-      "title": { "displayName": "Title", "purpose": "Names of works — project titles on hover, photograph captions. Always italic." },
-      "body": { "displayName": "Body", "purpose": "Prose. The bio paragraph is the only body copy on the site; capped at 480px, 75% opacity." },
-      "label": { "displayName": "Label", "purpose": "Navigation links and the skip link. Helvetica 11px at 0.25em, uppercase." },
-      "caption": { "displayName": "Caption", "purpose": "The smallest functional voice: EXECUTIVE PRODUCER, client names, eyebrows, footnotes. 9px at 0.3–0.4em." },
-      "data": { "displayName": "Data", "purpose": "Machine readings — timecode, HUD telemetry, lightbox counters, Vimeo credit blocks. Never prose or navigation." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "The hero name on the home reel. Once per site, bottom-left inside the framelines. The rem floor keeps it the largest element on a phone and under browser zoom."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The About name, mobile menu items, full-screen overlay titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Names of works — project titles on hover, photograph captions. Always italic."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, set in the interface face. The bio is the only body copy on the site: 66-character measure, 1.65 leading, #B1AEA8."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navigation, the skip link, and the client name — the credential identifies rather than captions, so it sits in the label tier."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "The smallest interface voice: EXECUTIVE PRODUCER, frame numbers, eyebrows, footnotes. 10px at 0.3–0.4em. Nothing in the interface goes below it."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Machine readings — timecode, HUD telemetry, lightbox counters, Vimeo credit blocks. Never prose or navigation."
+      },
+      "title-inset": {
+        "displayName": "Title (inset)",
+        "purpose": "The name of a work inside a lightbox or over a photograph, where the artefact already holds attention. 18px italic, one value across both surfaces."
+      },
+      "lockup": {
+        "displayName": "Lockup",
+        "purpose": "The header identity only. Weight 600 because a 300 hairline at 19px measures 0.34px — below what a screen can draw."
+      },
+      "link": {
+        "displayName": "Link",
+        "purpose": "Contact links, set as plain text at 13px with no underline and no icon."
+      },
+      "data-caption": {
+        "displayName": "Data (caption)",
+        "purpose": "Machine readings at caption scale: counters, the CREDITS toggle, CUEING."
+      },
+      "telemetry": {
+        "displayName": "Telemetry",
+        "purpose": "The home HUD only, at 9px. Quarantined below the 10px floor exactly like the instrument colours — a camera renders telemetry at telemetry size."
+      },
+      "glyph": {
+        "displayName": "Glyph control",
+        "purpose": "Bare ✕ and ← → controls in overlays. One size and weight across both lightboxes."
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "cut", "value": "200ms ease", "purpose": "Page-to-page cross-fade and the false-colour filter swap. The fastest move in the system." },
-      { "name": "quick", "value": "300ms ease", "purpose": "Lightbox backdrop fade, colour and opacity changes on controls, cursor state changes." },
-      { "name": "standard", "value": "400ms ease", "purpose": "Thumbnail scale to 1.03, scrim fade-in, hamburger fold, contact-link opacity." },
-      { "name": "considered", "value": "600ms ease", "purpose": "Nav opacity 0.5 → 1.0, mobile menu cross-fade, IRIS clip-path change, click ripple, tile entrance." },
-      { "name": "held", "value": "900ms ease-out", "purpose": "HUD fade-up, About column entrance, overlay title reveals." },
-      { "name": "cinematic", "value": "1400ms ease-in-out", "purpose": "The home reel resolving out of black. The longest transition permitted." },
-      { "name": "stagger", "value": "40ms", "purpose": "Delay between grid items on entrance. Photography cycles the multiplier every 12 items." },
-      { "name": "ease-default", "value": "ease", "purpose": "The only CSS easing used. No cubic-bezier overshoot, no spring, no bounce." }
+      {
+        "name": "cut",
+        "value": "200ms ease",
+        "purpose": "Page-to-page cross-fade and the false-colour filter swap. The fastest move in the system."
+      },
+      {
+        "name": "quick",
+        "value": "300ms ease",
+        "purpose": "Lightbox backdrop fade, colour and opacity changes on controls, cursor state changes."
+      },
+      {
+        "name": "standard",
+        "value": "400ms ease",
+        "purpose": "Thumbnail scale to 1.03, scrim fade-in, hamburger fold, contact-link opacity."
+      },
+      {
+        "name": "considered",
+        "value": "600ms ease",
+        "purpose": "Nav opacity 0.5 → 1.0, mobile menu cross-fade, IRIS clip-path change, click ripple, tile entrance."
+      },
+      {
+        "name": "held",
+        "value": "900ms ease-out",
+        "purpose": "HUD fade-up, About column entrance, overlay title reveals."
+      },
+      {
+        "name": "cinematic",
+        "value": "1400ms ease-in-out",
+        "purpose": "The home reel resolving out of black. The longest transition permitted."
+      },
+      {
+        "name": "stagger",
+        "value": "40ms",
+        "purpose": "Delay between grid items on entrance. Photography cycles the multiplier every 12 items."
+      },
+      {
+        "name": "ease-default",
+        "value": "ease",
+        "purpose": "The only CSS easing used. No cubic-bezier overshoot, no spring, no bounce."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "hud", "value": "767px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "hud",
+        "value": "767px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ],
+    "fonts": [
+      {
+        "family": "Cormorant Garamond",
+        "role": "serif",
+        "weights": [
+          "300",
+          "600"
+        ],
+        "styles": [
+          "normal",
+          "italic"
+        ],
+        "note": "Italic ships as a real cut: it is the semantic marker for the title of a work, so it must never be a browser shear."
+      },
+      {
+        "family": "Archivo",
+        "role": "ui",
+        "weights": [
+          "400",
+          "500"
+        ],
+        "styles": [
+          "normal"
+        ],
+        "note": "Chosen rather than inherited. Drawn for small text — heavier stems and open apertures are what survive at a 1px stem on near-black, and every visitor now reads the same face regardless of platform."
+      },
+      {
+        "family": "JetBrains Mono",
+        "role": "data",
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700"
+        ],
+        "styles": [
+          "normal"
+        ],
+        "note": "600 and 700 are loaded because the HUD uses them; a synthesised bold destroys the stem consistency that is the only reason to set a monospace."
+      }
     ]
   },
   "components": [
@@ -105,7 +349,7 @@
       "refersTo": "nav-link",
       "description": "Header navigation item. 50% opacity at rest, 100% when active or hovered, never underlined.",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link--active\" href=\"#\">HOME</a><a class=\"ds-nav-link\" href=\"#\">COMMERCIALS</a><a class=\"ds-nav-link\" href=\"#\">PHOTOGRAPHY</a><a class=\"ds-nav-link\" href=\"#\">ABOUT</a></nav>",
-      "css": ".ds-nav { display: flex; gap: 44px; align-items: center; background: #0C0C0C; padding: 20px 24px; } .ds-nav-link { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: #E8E4DC; opacity: 0.5; text-decoration: none; transition: opacity 600ms ease; } .ds-nav-link:hover { opacity: 1; } .ds-nav-link--active { opacity: 1; } .ds-nav-link:focus-visible { outline: 1px solid #8B6914; outline-offset: 4px; }"
+      "css": ".ds-nav { display: flex; gap: 44px; align-items: center; background: #0C0C0C; padding: 20px 24px; } .ds-nav-link { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: #E8E4DC; opacity: 0.5; text-decoration: none; transition: opacity 600ms ease; } .ds-nav-link:hover { opacity: 1; } .ds-nav-link--active { opacity: 1; } .ds-nav-link:focus-visible { outline: 1px solid #8B6914; outline-offset: 4px; }"
     },
     {
       "name": "Logo Lockup",
@@ -113,15 +357,15 @@
       "refersTo": null,
       "description": "Two-line identity: serif name over a widely tracked role line at half opacity. Hidden on the home page, where the hero text is the name.",
       "html": "<a class=\"ds-logo\" href=\"#\"><span class=\"ds-logo-name\">BEN KAUFMAN</span><span class=\"ds-logo-role\">EXECUTIVE PRODUCER</span></a>",
-      "css": ".ds-logo { display: block; text-decoration: none; line-height: 1; background: #0C0C0C; padding: 16px 20px; transition: opacity 600ms ease; } .ds-logo-name { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 18px; letter-spacing: 0.2em; color: #E8E4DC; text-transform: uppercase; line-height: 1.1; } .ds-logo-role { display: block; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9px; letter-spacing: 0.4em; color: #E8E4DC; opacity: 0.5; text-transform: uppercase; margin-top: 4px; } .ds-logo:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
+      "css": ".ds-logo { display: block; text-decoration: none; line-height: 1; background: #0C0C0C; padding: 16px 20px; transition: opacity 600ms ease; } .ds-logo-name { display: block; font-family: var(--font-serif); font-weight: 600; font-size: 19px; letter-spacing: 0.17em; color: #E8E4DC; text-transform: uppercase; line-height: 1.1; } .ds-logo-role { display: block; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.38em; color: #E8E4DC; opacity: 0.5; text-transform: uppercase; margin-top: 4px; } .ds-logo:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
     },
     {
       "name": "Work Tile",
       "kind": "card",
       "refersTo": "work-tile",
-      "description": "16:9 commercial thumbnail. Client and frame number read at rest; the italic title and a gold hairline are the reveal.",
+      "description": "16:9 commercial thumbnail. The client reads at rest in the label tier; the italic title and a gold hairline are the reveal.",
       "html": "<a class=\"ds-tile\" href=\"#\"><div class=\"ds-tile-img\"></div><div class=\"ds-tile-rest\"></div><div class=\"ds-tile-scrim\"></div><div class=\"ds-tile-text\"><span class=\"ds-tile-rule\"></span><h2 class=\"ds-tile-title\">Hibernation</h2><p class=\"ds-tile-client\">JOHN LEWIS</p></div><span class=\"ds-tile-frame\">10</span></a>",
-      "css": ".ds-tile { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #111111; border-radius: 0; width: 100%; text-decoration: none; } .ds-tile-img { position: absolute; inset: 0; background: linear-gradient(135deg, #1b1b1b 0%, #2a2622 60%, #14120f 100%); transition: transform 400ms ease; } .ds-tile:hover .ds-tile-img, .ds-tile:focus-visible .ds-tile-img { transform: scale(1.03); } .ds-tile-rest { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,12,0.88) 0%, rgba(12,12,12,0.34) 18%, transparent 36%); pointer-events: none; } .ds-tile-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,12,0.92) 0%, rgba(12,12,12,0.4) 50%, transparent 100%); opacity: 0; transition: opacity 400ms ease; pointer-events: none; } .ds-tile:hover .ds-tile-scrim, .ds-tile:focus-visible .ds-tile-scrim { opacity: 1; } .ds-tile-text { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 24px 18px; pointer-events: none; } .ds-tile-rule { display: block; width: 16px; height: 1px; background: #8B6914; opacity: 0; margin-bottom: 10px; transition: opacity 400ms ease; } .ds-tile:hover .ds-tile-rule, .ds-tile:focus-visible .ds-tile-rule { opacity: 1; } .ds-tile-title { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-style: italic; font-size: clamp(20px, 2.5vw, 28px); line-height: 1.1; letter-spacing: 0.02em; color: #E8E4DC; margin: 0 0 6px; opacity: 0; transform: translateY(10px); transition: transform 500ms ease, opacity 400ms ease; } .ds-tile:hover .ds-tile-title, .ds-tile:focus-visible .ds-tile-title { opacity: 1; transform: translateY(0); } .ds-tile-client { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9px; letter-spacing: 0.3em; color: #E8E4DC; opacity: 0.75; text-transform: uppercase; margin: 0; transition: opacity 400ms ease; } .ds-tile:hover .ds-tile-client, .ds-tile:focus-visible .ds-tile-client { opacity: 1; } .ds-tile-frame { position: absolute; bottom: 10px; right: 12px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9px; letter-spacing: 0.2em; color: #E8E4DC; opacity: 0.4; user-select: none; } .ds-tile:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
+      "css": ".ds-tile { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #111111; border-radius: 0; width: 100%; text-decoration: none; } .ds-tile-img { position: absolute; inset: 0; background: linear-gradient(135deg, #1b1b1b 0%, #2a2622 60%, #14120f 100%); transition: transform 400ms ease; } .ds-tile:hover .ds-tile-img, .ds-tile:focus-visible .ds-tile-img { transform: scale(1.03); } .ds-tile-rest { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,12,0.88) 0%, rgba(12,12,12,0.34) 18%, transparent 36%); pointer-events: none; } .ds-tile-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,12,12,0.92) 0%, rgba(12,12,12,0.4) 50%, transparent 100%); opacity: 0; transition: opacity 400ms ease; pointer-events: none; } .ds-tile:hover .ds-tile-scrim, .ds-tile:focus-visible .ds-tile-scrim { opacity: 1; } .ds-tile-text { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 24px 18px; pointer-events: none; } .ds-tile-rule { display: block; width: 16px; height: 1px; background: #8B6914; opacity: 0; margin-bottom: 10px; transition: opacity 400ms ease; } .ds-tile:hover .ds-tile-rule, .ds-tile:focus-visible .ds-tile-rule { opacity: 1; } .ds-tile-title { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: clamp(20px, 2.5vw, 28px); line-height: 1.1; letter-spacing: 0.02em; color: #E8E4DC; margin: 0 0 6px; opacity: 0; transform: translateY(10px); transition: transform 500ms ease, opacity 400ms ease; } .ds-tile:hover .ds-tile-title, .ds-tile:focus-visible .ds-tile-title { opacity: 1; transform: translateY(0); } .ds-tile-client { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.28em; color: #E8E4DC; opacity: 0.9; text-transform: uppercase; margin: 0; transition: opacity 400ms ease; } .ds-tile:hover .ds-tile-client, .ds-tile:focus-visible .ds-tile-client { opacity: 1; } .ds-tile-frame { position: absolute; bottom: 10px; right: 12px; font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.3em; color: #E8E4DC; opacity: 0.4; user-select: none; } .ds-tile:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
     },
     {
       "name": "Photo Tile",
@@ -129,7 +373,7 @@
       "refersTo": null,
       "description": "Masonry photograph on a near-black bed. Slightly defocused at rest; resolves sharp and scales on hover with an italic title bottom-right.",
       "html": "<div class=\"ds-photo\"><div class=\"ds-photo-img\"></div><div class=\"ds-photo-scrim\"></div><span class=\"ds-photo-title\">Loch Lomond</span></div>",
-      "css": ".ds-photo { position: relative; display: block; overflow: hidden; background: #0a0a0a; border-radius: 0; width: 100%; aspect-ratio: 3 / 2; } .ds-photo-img { position: absolute; inset: 0; background: linear-gradient(160deg, #23282b 0%, #3a3a35 55%, #101112 100%); filter: blur(0.4px); transition: filter 400ms ease, transform 600ms ease; } .ds-photo:hover .ds-photo-img { filter: blur(0px); transform: scale(1.03); } .ds-photo-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%); opacity: 0; transition: opacity 400ms ease; pointer-events: none; } .ds-photo:hover .ds-photo-scrim { opacity: 1; } .ds-photo-title { position: absolute; bottom: 12px; right: 14px; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 300; font-size: 13px; color: #fff; opacity: 0; transition: opacity 400ms ease; user-select: none; } .ds-photo:hover .ds-photo-title { opacity: 0.9; }"
+      "css": ".ds-photo { position: relative; display: block; overflow: hidden; background: #0a0a0a; border-radius: 0; width: 100%; aspect-ratio: 3 / 2; } .ds-photo-img { position: absolute; inset: 0; background: linear-gradient(160deg, #23282b 0%, #3a3a35 55%, #101112 100%); filter: blur(0.4px); transition: filter 400ms ease, transform 600ms ease; } .ds-photo:hover .ds-photo-img { filter: blur(0px); transform: scale(1.03); } .ds-photo-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%); opacity: 0; transition: opacity 400ms ease; pointer-events: none; } .ds-photo:hover .ds-photo-scrim { opacity: 1; } .ds-photo-title { position: absolute; bottom: 12px; right: 14px; font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 18px; letter-spacing: 0.04em; color: #E8E4DC; opacity: 0; transition: opacity 400ms ease; user-select: none; } .ds-photo:hover .ds-photo-title { opacity: 0.9; }"
     },
     {
       "name": "HUD Readout",
@@ -137,7 +381,7 @@
       "refersTo": "hud-readout",
       "description": "Camera telemetry pair — dim mono label, bright mono value. Amber when the state is engaged. Home reel only.",
       "html": "<div class=\"ds-hud\"><span class=\"ds-hud-item\"><span class=\"ds-hud-label\">FPS</span><span class=\"ds-hud-value\">24.000</span></span><span class=\"ds-hud-item\"><span class=\"ds-hud-label\">SHUTTER</span><span class=\"ds-hud-value\">172.8</span></span><span class=\"ds-hud-item ds-hud-item--active\"><span class=\"ds-hud-label\">TC</span><span class=\"ds-hud-value\">01:07:23:00</span></span><span class=\"ds-hud-rec\"><span class=\"ds-hud-dot\"></span>REC</span></div>",
-      "css": ".ds-hud { display: flex; align-items: center; gap: 28px; background: #0C0C0C; padding: 14px 20px; opacity: 0.82; } .ds-hud-item { display: inline-flex; align-items: baseline; gap: 4px; } .ds-hud-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.08em; color: rgba(255,255,255,0.6); transition: color 300ms ease; } .ds-hud-value { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #FFFFFF; transition: color 300ms ease; } .ds-hud-item--active .ds-hud-label { color: rgba(255,180,0,0.9); } .ds-hud-item--active .ds-hud-value { color: #FFC800; } .ds-hud-rec { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; color: #FF3333; } .ds-hud-dot { width: 7px; height: 7px; border-radius: 50%; background: #FF3333; display: inline-block; flex-shrink: 0; }"
+      "css": ".ds-hud { display: flex; align-items: center; gap: 28px; background: #0C0C0C; padding: 14px 20px; opacity: 0.82; } .ds-hud-item { display: inline-flex; align-items: baseline; gap: 4px; } .ds-hud-label { font-family: var(--font-data); font-size: 9px; font-weight: 400; letter-spacing: 0.08em; color: rgba(255,255,255,0.6); transition: color 300ms ease; } .ds-hud-value { font-family: var(--font-data); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #FFFFFF; transition: color 300ms ease; } .ds-hud-item--active .ds-hud-label { color: rgba(255,180,0,0.9); } .ds-hud-item--active .ds-hud-value { color: #FFC800; } .ds-hud-rec { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-data); font-size: 13px; font-weight: 600; letter-spacing: 0.06em; color: #FF3333; } .ds-hud-dot { width: 7px; height: 7px; border-radius: 50%; background: #FF3333; display: inline-block; flex-shrink: 0; }"
     },
     {
       "name": "Credits Toggle",
@@ -145,7 +389,7 @@
       "refersTo": "credits-toggle",
       "description": "Bare mono label inside the commercials lightbox; opens the Vimeo credit block from the bottom edge.",
       "html": "<button class=\"ds-credits\">CREDITS</button>",
-      "css": ".ds-credits { background: none; border: none; border-radius: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(232,228,220,0.5); transition: color 300ms ease; padding: 8px 0; cursor: none; } .ds-credits:hover { color: rgba(232,228,220,0.9); } .ds-credits:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
+      "css": ".ds-credits { background: none; border: none; border-radius: 0; font-family: var(--font-data); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(232,228,220,0.5); transition: color 300ms ease; padding: 8px 0; cursor: none; } .ds-credits:hover { color: rgba(232,228,220,0.9); } .ds-credits:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
     },
     {
       "name": "Close Button",
@@ -153,7 +397,7 @@
       "refersTo": "close-button",
       "description": "Bare glyph fixed to the viewport corner of any overlay. No box, no border, no radius.",
       "html": "<button class=\"ds-close\" aria-label=\"Close\">✕</button>",
-      "css": ".ds-close { background: none; border: none; border-radius: 0; color: #E8E4DC; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 300; font-size: 24px; line-height: 1; letter-spacing: 0.05em; opacity: 0.7; padding: 8px; transition: opacity 300ms ease; cursor: none; } .ds-close:hover { opacity: 1; } .ds-close:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
+      "css": ".ds-close { background: none; border: none; border-radius: 0; color: #E8E4DC; font-family: var(--font-ui); font-weight: 400; font-size: 22px; line-height: 1; letter-spacing: 0.05em; opacity: 0.7; padding: 8px; transition: opacity 300ms ease; cursor: none; } .ds-close:hover { opacity: 1; } .ds-close:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
     },
     {
       "name": "Contact Link",
@@ -161,7 +405,7 @@
       "refersTo": "contact-link",
       "description": "Plain-text contact, preceded by a widely tracked eyebrow and a 40px gold rule. No icons, no underline, no button.",
       "html": "<div class=\"ds-contact\"><div class=\"ds-rule\"></div><p class=\"ds-contact-eyebrow\">Contact</p><a class=\"ds-contact-link\" href=\"#\">hello@benkaufman.co</a><a class=\"ds-contact-link\" href=\"#\">www.benkaufmanphotography.com</a></div>",
-      "css": ".ds-contact { display: flex; flex-direction: column; gap: 12px; background: #0C0C0C; padding: 24px; } .ds-rule { width: 40px; height: 1px; background: #8B6914; opacity: 0.6; margin-bottom: 12px; } .ds-contact-eyebrow { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: #666666; margin: 0 0 4px; } .ds-contact-link { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; letter-spacing: 0.05em; color: #E8E4DC; text-decoration: none; opacity: 0.7; transition: opacity 400ms ease; } .ds-contact-link:hover { opacity: 1; } .ds-contact-link:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
+      "css": ".ds-contact { display: flex; flex-direction: column; gap: 12px; background: #0C0C0C; padding: 24px; } .ds-rule { width: 40px; height: 1px; background: #8B6914; opacity: 0.6; margin-bottom: 12px; } .ds-contact-eyebrow { font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: #888888; margin: 0 0 4px; } .ds-contact-link { font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.05em; color: #E8E4DC; text-decoration: none; opacity: 0.7; transition: opacity 400ms ease; } .ds-contact-link:hover { opacity: 1; } .ds-contact-link:focus-visible { outline: 2px solid #8B6914; outline-offset: 3px; }"
     },
     {
       "name": "Cursor Ring",
@@ -169,7 +413,7 @@
       "refersTo": null,
       "description": "The replacement pointer: a slowly rotating 1px ring lerping behind a 6px dot. Grows to 80px and labels itself PLAY over a thumbnail.",
       "html": "<div class=\"ds-cursor-demo\"><div class=\"ds-cursor-ring\"><span class=\"ds-cursor-label\">PLAY</span></div><div class=\"ds-cursor-dot\"></div></div>",
-      "css": ".ds-cursor-demo { position: relative; height: 120px; background: #0C0C0C; display: flex; align-items: center; justify-content: center; } @keyframes ds-cursor-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .ds-cursor-ring { position: relative; width: 80px; height: 80px; border-radius: 50%; border: 1px solid rgba(232,228,220,0.9); animation: ds-cursor-spin 8s linear infinite; } .ds-cursor-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 9px; letter-spacing: 0.25em; color: rgba(232,228,220,0.9); text-transform: uppercase; user-select: none; } .ds-cursor-dot { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin-left: -3px; margin-top: -3px; border-radius: 50%; background: rgba(232,228,220,0.9); }"
+      "css": ".ds-cursor-demo { position: relative; height: 120px; background: #0C0C0C; display: flex; align-items: center; justify-content: center; } @keyframes ds-cursor-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .ds-cursor-ring { position: relative; width: 80px; height: 80px; border-radius: 50%; border: 1px solid rgba(232,228,220,0.9); animation: ds-cursor-spin 8s linear infinite; } .ds-cursor-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.3em; color: rgba(232,228,220,0.9); text-transform: uppercase; user-select: none; } .ds-cursor-dot { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin-left: -3px; margin-top: -3px; border-radius: 50%; background: rgba(232,228,220,0.9); }"
     }
   ],
   "narrative": {
@@ -177,25 +421,80 @@
     "overview": "Everything in this system behaves like the feed on a director's monitor. The picture runs full-bleed and uninterrupted; the interface lives in the margins as instrumentation — framelines at 10vh, a live 24fps timecode, FPS / SHUTTER / IRIS / EI / ND / WB readouts, a STBY indicator that flips to REC after ten seconds. None of it decorates the image. It surrounds it, the way a monitor's overlay surrounds a take, and it implies a person who reads those numbers for a living.\n\nThe register is precise, nocturnal and unshowy. Technical exactness in near-darkness: a #0C0C0C void that is deliberately not black, warm parchment text that is deliberately not white, one gold that never fills anything, and a serif that appears only for names and titles. Confidence is expressed as restraint — no element raises its voice, and nothing is explained. The audience is film people; the system speaks their language without translating it.\n\nThe site is emphatically not a creative-agency template, a SaaS product page, a stock photographer's portfolio theme, or a show-reel gimmick site. Those four are binding anti-references. The distinction from the last one is the sharpest and the easiest to lose: every effect here is diegetic — it exists because a camera, a projector or a lens does that. A projector hum plays as a film loads because projectors hum. Grain sits at 8% over every page because film has grain. The moment an effect stops being something a piece of film equipment actually does, it becomes the gimmick site.",
     "keyCharacteristics": [
       "Near-black void (#0C0C0C), warm parchment text (#E8E4DC), one dark gold accent used at hairline scale",
-      "Cormorant Garamond 300 for names and titles only; Helvetica Neue for UI; DM Sans for prose; JetBrains Mono for machine data",
+      "Three families, three jobs: Cormorant Garamond for proper nouns, Archivo for the interface, JetBrains Mono for machine data",
       "Zero corner radius everywhere except literal optics (rings, dots, the countdown circle)",
       "No shadows in the entire system — depth is scrim, grain, vignette and defocus",
       "Edge-to-edge grids separated by a single 1px hairline, never gutters or cards",
       "Slow motion: 200–1400ms, ease and easeOut, no springs, no bounce",
-      "A custom cursor replaces the system cursor globally (cursor: none !important)"
+      "A custom cursor replaces the system cursor wherever a fine pointer exists and reduced motion is not requested",
+      "A 10px floor on all interface type; only the home HUD's telemetry is allowed below it"
     ],
     "rules": [
-      { "name": "The Tungsten Rule", "body": "Tungsten Gold is applied at hairline scale only: a 1px rule, a 9px label, a focus ring, one active word. If it covers more than a line or a word, it's wrong. Its rarity is what makes it read as gold rather than as a brand colour.", "section": "colors" },
-      { "name": "The No-Pure Rule", "body": "No surface is #000000 and no text is #FFFFFF. The only exceptions are diegetic: the film leader's flash frame, the projector gate flash, and the HUD's white readouts, all of which are accurate to the equipment they imitate.", "section": "colors" },
-      { "name": "The Instrument Quarantine Rule", "body": "HUD Amber, REC Red and STBY Green belong to the camera overlay. They never appear as UI feedback, never as a link colour, never as a state on a button.", "section": "colors" },
-      { "name": "The Serif-Speaks-Once Rule", "body": "Cormorant is for proper nouns — the name, and the title of a work. It never runs a sentence, never labels a control, never appears below 13px.", "section": "typography" },
-      { "name": "The Machine Voice Rule", "body": "JetBrains Mono is reserved for readings a machine would produce: timecode, frame IDs, counters, credit blocks pulled from Vimeo. Never prose, never navigation, never a heading.", "section": "typography" },
-      { "name": "The Wide-Small Rule", "body": "Functional type gets smaller and wider together. At 9px the tracking is 0.3–0.4em; at 11px it is 0.25em. Small type is never set tight — the space is what makes it legible against a moving image.", "section": "typography" },
-      { "name": "The No-Gutter Rule", "body": "Work images butt against each other. The only separation permitted between two pieces of work is a 1px hairline. No cards, no padding, no drop-shadowed tiles.", "section": "layout" },
-      { "name": "The Frameline Rule", "body": "On the home reel, nothing of consequence lives outside the 10vh framelines. The HUD reads in the margins above and below; the name reads inside the frame.", "section": "layout" },
-      { "name": "The Optical Depth Rule", "body": "No box-shadow, ever. If something needs to separate from what's behind it, it gets a scrim, a blur or a vignette — never a lift.", "section": "elevation" },
-      { "name": "The Stacking Order", "body": "Reading upward from the picture: video (1) → bottom scrim (3) → false colour (4) → top scrim (8) → framelines (90) → HUD (100) → header (100) → lightboxes (200–500) → idle and easter-egg overlays (9500–10000) → grain (9999) → cursor (99999). Grain sits above everything except the cursor, so nothing in the interface is ever cleaner than the image.", "section": "elevation" },
-      { "name": "The Zero Radius Rule", "body": "Nothing rectangular is ever rounded. A rounded corner anywhere in this system is a bug, not a preference.", "section": "shapes" }
+      {
+        "name": "The Tungsten Rule",
+        "body": "Tungsten Gold is applied at hairline scale only: a 1px rule, a 9px label, a focus ring, one active word. If it covers more than a line or a word, it's wrong. Its rarity is what makes it read as gold rather than as a brand colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Pure Rule",
+        "body": "No surface is #000000 and no text is #FFFFFF. The only exceptions are diegetic: the film leader's flash frame, the projector gate flash, and the HUD's white readouts, all of which are accurate to the equipment they imitate.",
+        "section": "colors"
+      },
+      {
+        "name": "The Instrument Quarantine Rule",
+        "body": "HUD Amber, REC Red and STBY Green belong to the camera overlay. They never appear as UI feedback, never as a link colour, never as a state on a button.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Gutter Rule",
+        "body": "Work images butt against each other. The only separation permitted between two pieces of work is a 1px hairline. No cards, no padding, no drop-shadowed tiles.",
+        "section": "layout"
+      },
+      {
+        "name": "The Frameline Rule",
+        "body": "On the home reel, nothing of consequence lives outside the 10vh framelines. The HUD reads in the margins above and below; the name reads inside the frame.",
+        "section": "layout"
+      },
+      {
+        "name": "The Optical Depth Rule",
+        "body": "No box-shadow, ever. If something needs to separate from what's behind it, it gets a scrim, a blur or a vignette — never a lift.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stacking Order",
+        "body": "Reading upward from the picture: video (1) → bottom scrim (3) → false colour (4) → top scrim (8) → framelines (90) → HUD (100) → header (100) → lightboxes (200–500) → idle and easter-egg overlays (9500–10000) → grain (9999) → cursor (99999). Grain sits above everything except the cursor, so nothing in the interface is ever cleaner than the image.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Zero Radius Rule",
+        "body": "Nothing rectangular is ever rounded. A rounded corner anywhere in this system is a bug, not a preference.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Serif-Speaks-Once Rule",
+        "body": "Cormorant is for proper nouns — the name, and the title of a work. It never runs a sentence and never labels a control. Below ~15px it needs weight 400 or more: its x-height is 0.386em, so 13px Cormorant is optically a 9px face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Machine Voice Rule",
+        "body": "JetBrains Mono is reserved for readings a machine would produce: timecode, frame IDs, counters, credit blocks pulled from Vimeo. Never prose, never navigation, never a heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The Wide-Small Rule",
+        "body": "Functional type gets smaller and wider together. At 10px the tracking is 0.3–0.4em; at 11px it is 0.25–0.28em. Small type is never set tight — the space is what makes it legible against a moving image.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ten-Pixel Floor Rule",
+        "body": "Nothing in the interface is set below 10px. The single exception is the home HUD's telemetry at 9px, quarantined exactly like the instrument colours: a camera renders telemetry at telemetry size, and that is the whole point of it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rem-Floor Rule",
+        "body": "Every fluid size is a clamp() whose minimum is in rem. A bare vw value does not respond to browser zoom — the layout viewport shrinks by the same factor the unit grows — so display type set in pure vw is the one element on a page that a low-vision visitor cannot enlarge.",
+        "section": "typography"
+      }
     ],
     "dos": [
       "Do keep Tungsten Gold (#8B6914) at hairline scale — a 1px rule, a 9px label, a focus ring, one active word. Never a fill.",

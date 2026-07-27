@@ -204,7 +204,7 @@ function GridItem({
         />
         <h2
           style={{
-            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+            fontFamily: "var(--font-serif)",
             fontWeight: 300,
             fontStyle: "italic",
             fontSize: "clamp(20px, 2.5vw, 28px)",
@@ -222,11 +222,13 @@ function GridItem({
         </h2>
         <p
           style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: "9px",
-            letterSpacing: "0.3em",
+            fontFamily: "var(--font-ui)",
+            // The credential sits in the label tier, not the caption tier —
+            // this is the primary identifying layer of the whole grid.
+            fontSize: "11px",
+            letterSpacing: "0.28em",
             color: "#E8E4DC",
-            opacity: engaged ? 1 : 0.75,
+            opacity: engaged ? 1 : 0.9,
             textTransform: "uppercase",
             transition: "opacity 400ms ease",
           }}
@@ -242,11 +244,11 @@ function GridItem({
           position: "absolute",
           bottom: "10px",
           right: "12px",
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: "9px",
-          letterSpacing: "0.2em",
+          fontFamily: "var(--font-ui)",
+          fontSize: "10px",
+          letterSpacing: "0.3em",
           color: "#E8E4DC",
-          opacity: watched ? 0.15 : 0.4,
+          opacity: watched ? 0.2 : 0.45,
           transition: "opacity 600ms ease",
           textTransform: "uppercase",
           pointerEvents: "none",
@@ -543,10 +545,10 @@ function Lightbox({
               position: "absolute",
               bottom: "-26px",
               left: 0,
-              fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-              fontSize: "9px",
+              fontFamily: "var(--font-data)",
+              fontSize: "10px",
               letterSpacing: "0.3em",
-              color: "rgba(232,228,220,0.45)",
+              color: "rgba(232,228,220,0.55)",
               textTransform: "uppercase",
               pointerEvents: "none",
               animation: "quietPulse 2.4s ease-in-out infinite",
@@ -589,12 +591,12 @@ function Lightbox({
           background: "none",
           border: "none",
           color: "#E8E4DC",
-          fontSize: "24px",
+          fontSize: "22px",
           lineHeight: 1,
           opacity: 0.7,
           transition: "opacity 300ms ease",
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontWeight: 300,
+          fontFamily: "var(--font-ui)",
+          fontWeight: 400,
           letterSpacing: "0.05em",
           padding: "8px",
         }}
@@ -660,35 +662,35 @@ function Lightbox({
       >
         <p
           style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: "9px",
-            letterSpacing: "0.3em",
+            fontFamily: "var(--font-ui)",
+            fontSize: "11px",
+            letterSpacing: "0.28em",
             textTransform: "uppercase",
-            color: "rgba(232,228,220,0.5)",
-            marginBottom: "6px",
+            color: "rgba(232,228,220,0.6)",
+            marginBottom: "8px",
           }}
         >
           {project.client}
         </p>
         <p
           style={{
-            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+            fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             fontWeight: 300,
-            fontSize: "16px",
+            fontSize: "18px",
             letterSpacing: "0.04em",
-            color: "rgba(232,228,220,0.75)",
-            marginBottom: "8px",
+            color: "rgba(232,228,220,0.85)",
+            marginBottom: "10px",
           }}
         >
           {title}
         </p>
         <p
           style={{
-            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-            fontSize: "9px",
-            letterSpacing: "0.25em",
-            color: "rgba(232,228,220,0.3)",
+            fontFamily: "var(--font-data)",
+            fontSize: "10px",
+            letterSpacing: "0.3em",
+            color: "rgba(232,228,220,0.5)",
           }}
         >
           {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
@@ -708,11 +710,11 @@ function Lightbox({
             left: "44px",
             background: "none",
             border: "none",
-            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-            fontSize: "9px",
-            letterSpacing: "0.25em",
+            fontFamily: "var(--font-data)",
+            fontSize: "10px",
+            letterSpacing: "0.3em",
             textTransform: "uppercase",
-            color: creditsOpen ? "rgba(232,228,220,0.9)" : "rgba(232,228,220,0.5)",
+            color: creditsOpen ? "rgba(232,228,220,0.9)" : "rgba(232,228,220,0.6)",
             transition: "color 300ms ease",
             padding: "8px 0",
           }}
@@ -736,7 +738,7 @@ function Lightbox({
               left: 0,
               right: 0,
               maxHeight: "33vh",
-              background: "rgba(0,0,0,0.85)",
+              background: "rgba(10,10,10,0.92)",
               padding: "24px 44px",
               overflowY: "auto",
               zIndex: 201,
@@ -744,7 +746,7 @@ function Lightbox({
           >
             <p
               style={{
-                fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+                fontFamily: "var(--font-data)",
                 fontSize: "11px",
                 lineHeight: 1.8,
                 color: "rgba(232,228,220,0.8)",

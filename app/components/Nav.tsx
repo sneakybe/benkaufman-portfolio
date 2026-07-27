@@ -63,10 +63,13 @@ export default function Nav() {
         >
           <div
             style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
-              fontWeight: 300,
-              fontSize: "18px",
-              letterSpacing: "0.2em",
+              fontFamily: "var(--font-serif)",
+              // 300 at this size renders a 0.34px hairline — below the
+              // rasteriser's floor, so the stroke contrast that makes this
+              // face worth using is the first thing lost. 600 restores it.
+              fontWeight: 600,
+              fontSize: "19px",
+              letterSpacing: "0.17em",
               color: "#E8E4DC",
               textTransform: "uppercase",
               lineHeight: 1.1,
@@ -76,10 +79,10 @@ export default function Nav() {
           </div>
           <div
             style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontFamily: "var(--font-ui)",
               fontWeight: 400,
-              fontSize: "9px",
-              letterSpacing: "0.4em",
+              fontSize: "10px",
+              letterSpacing: "0.38em",
               color: "#E8E4DC",
               opacity: 0.5,
               textTransform: "uppercase",
@@ -105,7 +108,7 @@ export default function Nav() {
               key={href}
               href={href}
               style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontFamily: "var(--font-ui)",
                 fontSize: "11px",
                 letterSpacing: "0.25em",
                 textTransform: "uppercase",
@@ -189,9 +192,9 @@ export default function Nav() {
             href={href}
             style={{
               fontFamily:
-                "var(--font-cormorant), 'Cormorant Garamond', serif",
+                "var(--font-serif)",
               fontWeight: 300,
-              fontSize: "clamp(32px, 8vw, 64px)",
+              fontSize: "clamp(2rem, 8vw, 4rem)",
               letterSpacing: "0.1em",
               color: pathname === href ? "#8B6914" : "#E8E4DC",
               textDecoration: "none",

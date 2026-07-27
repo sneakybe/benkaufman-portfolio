@@ -1,28 +1,34 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Archivo, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "./components/Nav";
 import Cursor from "./components/Cursor";
 import SkipLink from "./components/SkipLink";
 
+// Names and titles of works. Italic is load-bearing — it is how a title of a
+// work is told from a heading — so it ships as a real cut, not a browser shear.
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "600"],
+  weight: ["300", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+// The interface voice: navigation, labels, captions, prose. Chosen rather than
+// inherited, so every visitor reads the same face regardless of platform.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["300", "400"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
+// Machine readings. 600 and 700 are used by the HUD and must be real cuts.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -51,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${archivo.variable} ${jetbrainsMono.variable}`}>
       <body>
         <SkipLink />
         <Cursor />

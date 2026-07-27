@@ -97,9 +97,9 @@ function ScrambleName() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{
-        fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+        fontFamily: "var(--font-serif)",
         fontWeight: 300,
-        fontSize: "clamp(32px, 4vw, 64px)",
+        fontSize: "clamp(2rem, 4vw, 4rem)",
         lineHeight: 0.92,
         letterSpacing: "0.02em",
         color: "#E8E4DC",
@@ -208,14 +208,14 @@ export default function AboutPage() {
           {/* Bio */}
           <p
             style={{
-              fontFamily:
-                "var(--font-dm-sans), 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontFamily: "var(--font-ui)",
               fontSize: "16px",
-              lineHeight: 1.8,
-              color: "#E8E4DC",
-              opacity: 0.75,
+              lineHeight: 1.65,
+              // Set as a value rather than an opacity so the contrast is
+              // auditable in the source and can't stack with a parent.
+              color: "#B1AEA8",
               maxWidth: "480px",
-              fontWeight: 300,
+              fontWeight: 400,
             }}
           >
             {bio}
@@ -225,11 +225,11 @@ export default function AboutPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <p
               style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontSize: "9px",
+                fontFamily: "var(--font-ui)",
+                fontSize: "10px",
                 letterSpacing: "0.35em",
                 textTransform: "uppercase",
-                color: "#666666",
+                color: "#888888",
                 marginBottom: "4px",
               }}
             >
@@ -238,7 +238,7 @@ export default function AboutPage() {
             <a
               href="mailto:hello@benkaufman.co"
               style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontFamily: "var(--font-ui)",
                 fontSize: "13px",
                 letterSpacing: "0.05em",
                 color: "#E8E4DC",
@@ -260,7 +260,7 @@ export default function AboutPage() {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontFamily: "var(--font-ui)",
                 fontSize: "13px",
                 letterSpacing: "0.05em",
                 color: "#E8E4DC",
@@ -281,11 +281,11 @@ export default function AboutPage() {
             {/* Selected work footnote — inside contact section, 48px below last link */}
             <p
               style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontSize: "9px",
+                fontFamily: "var(--font-ui)",
+                fontSize: "10px",
                 letterSpacing: "0.4em",
                 textTransform: "uppercase",
-                color: "rgba(232, 228, 220, 0.25)",
+                color: "rgba(232, 228, 220, 0.6)",
                 marginTop: "16px",
               }}
             >
@@ -297,6 +297,11 @@ export default function AboutPage() {
 
       <style>{`
         .about-headshot { height: 100vh; }
+        /* Between the stack breakpoint and ~1120px the fixed 80px chamber
+           crushes the bio to a 31-character ribbon. The padding yields. */
+        @media (max-width: 1120px) and (min-width: 769px) {
+          .about-content { padding: 96px 44px !important; }
+        }
         @media (max-width: 768px) {
           .about-main { overflow-y: auto; }
           .about-grid {

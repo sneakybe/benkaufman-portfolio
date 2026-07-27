@@ -22,7 +22,7 @@ function Pill({ children, center }: { children: React.ReactNode; center?: boolea
         background: "rgba(100,100,100,0.55)",
         padding: "2px 7px",
         fontSize: "9px",
-        fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+        fontFamily: "var(--font-data)",
         color: "white",
         lineHeight: "14px",
         letterSpacing: "0.05em",
@@ -42,7 +42,7 @@ function PillHeader({ children }: { children: React.ReactNode }) {
       style={{
         display: "block",
         fontSize: "11px",
-        fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+        fontFamily: "var(--font-data)",
         fontWeight: 700,
         color: "white",
         letterSpacing: "0.1em",
@@ -81,7 +81,7 @@ function HUDItem({
     >
       <span
         style={{
-          fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+          fontFamily: "var(--font-data)",
           fontSize: "9px",
           fontWeight: 400,
           color: highlight ? "rgba(255,180,0,0.9)" : "rgba(255,255,255,0.6)",
@@ -94,7 +94,7 @@ function HUDItem({
       </span>
       <span
         style={{
-          fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+          fontFamily: "var(--font-data)",
           fontSize: "11px",
           fontWeight: 600,
           color: highlight ? "rgba(255,200,0,1.0)" : "rgba(255,255,255,1.0)",
@@ -323,7 +323,7 @@ function ArriHUD({
               left: "50%",
               top: "35px",
               transform: "translateX(-50%)",
-              fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+              fontFamily: "var(--font-data)",
               fontSize: "10px",
               fontWeight: 500,
               letterSpacing: "0.3em",
@@ -422,7 +422,7 @@ function ArriHUD({
           />
           <span
             style={{
-              fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+              fontFamily: "var(--font-data)",
               fontSize: "13px",
               fontWeight: 600,
               color: isRec ? "#FF3333" : "rgba(255,255,255,0.95)",
@@ -486,7 +486,7 @@ function Slate({ onDone }: { onDone: () => void }) {
     >
       <span
         style={{
-          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontFamily: "var(--font-serif)",
           fontStyle: "italic",
           fontWeight: 300,
           fontSize: "28px",
@@ -654,7 +654,7 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
             zIndex: 1,
           }}>
             <span style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+              fontFamily: "var(--font-serif)",
               fontWeight: 300,
               fontSize: "20vmin",
               lineHeight: 1,
@@ -670,19 +670,19 @@ function FilmLeader({ onDone }: { onDone: () => void }) {
           {/* Corner labels — absolute relative to root overlay */}
           <span style={{
             position: "absolute", top: "24px", left: "24px",
-            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontFamily: "var(--font-data)",
             fontSize: "10px", color: "rgba(232,228,220,0.4)",
             letterSpacing: "0.1em", userSelect: "none",
           }}>LFOA</span>
           <span style={{
             position: "absolute", bottom: "24px", left: "24px",
-            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontFamily: "var(--font-data)",
             fontSize: "10px", color: "rgba(232,228,220,0.4)",
             letterSpacing: "0.1em", userSelect: "none",
           }}>SYNC</span>
           <span style={{
             position: "absolute", bottom: "24px", right: "24px",
-            fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
+            fontFamily: "var(--font-data)",
             fontSize: "10px", color: "rgba(232,228,220,0.4)",
             letterSpacing: "0.1em", userSelect: "none",
           }}>BK&nbsp;&nbsp;A&nbsp;&nbsp;001</span>
@@ -739,8 +739,8 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.7 }}
         style={{
-          fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-          fontSize: "8px",
+          fontFamily: "var(--font-data)",
+          fontSize: "10px",
           letterSpacing: "0.45em",
           color: "rgba(139,105,20,0.7)",
           textTransform: "uppercase",
@@ -753,9 +753,9 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
         style={{
-          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontFamily: "var(--font-serif)",
           fontWeight: 300,
-          fontSize: "clamp(56px, 9vw, 108px)",
+          fontSize: "clamp(2rem, 4vw, 4rem)",
           lineHeight: 0.9,
           letterSpacing: "0.06em",
           color: "#E8E4DC",
@@ -770,8 +770,8 @@ function DirectorsCut({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1, duration: 0.6 }}
         style={{
-          fontFamily: "var(--font-jetbrains), 'JetBrains Mono', monospace",
-          fontSize: "8px",
+          fontFamily: "var(--font-data)",
+          fontSize: "10px",
           letterSpacing: "0.35em",
           color: "rgba(232,228,220,0.2)",
           textTransform: "uppercase",
@@ -810,9 +810,9 @@ function QuietOnSet() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.9, ease: "easeOut" }}
         style={{
-          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontFamily: "var(--font-serif)",
           fontWeight: 300,
-          fontSize: "clamp(32px, 5vw, 64px)",
+          fontSize: "clamp(2rem, 4vw, 4rem)",
           letterSpacing: "0.12em",
           color: "#E8E4DC",
           textTransform: "uppercase",
@@ -826,8 +826,8 @@ function QuietOnSet() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1, duration: 0.6 }}
         style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: "9px",
+          fontFamily: "var(--font-ui)",
+          fontSize: "10px",
           letterSpacing: "0.4em",
           color: "#E8E4DC",
           textTransform: "uppercase",
@@ -1051,6 +1051,7 @@ export default function Home() {
 
       {/* ── Hero text (between framelines) ── */}
       <div
+        className="hero-block"
         style={{
           position: "absolute",
           bottom: "calc(10vh + 72px)",
@@ -1060,13 +1061,16 @@ export default function Home() {
         }}
       >
         <motion.h1
+          className="hero-name"
           initial={{ opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 36 }}
           animate={{ opacity: videoReady ? 1 : 0, y: videoReady ? 0 : 36 }}
           transition={{ duration: shouldReduceMotion ? 0 : 1.0, ease: "easeOut", delay: shouldReduceMotion ? 0 : 0.6 }}
           style={{
-            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+            fontFamily: "var(--font-serif)",
             fontWeight: 300,
-            fontSize: "8vw",
+            // The rem floor keeps the name the largest thing on the page at
+            // 320px and under zoom, where a bare 8vw shrank below the nav.
+            fontSize: "clamp(2.75rem, 8vw, 7.25rem)",
             lineHeight: 0.9,
             letterSpacing: "0.04em",
             color: "#E8E4DC",
@@ -1109,6 +1113,13 @@ export default function Home() {
         }
         .frameline-top { top: 10vh; }
         .frameline-bottom { bottom: 10vh; }
+        /* On a phone the name is too wide to hold one line at a size that
+           still outranks the navigation, so it breaks and stays the largest
+           thing on the screen. */
+        @media (max-width: 640px) {
+          .hero-block { left: 24px !important; right: 24px !important; }
+          .hero-name { white-space: normal !important; line-height: 0.95 !important; }
+        }
         /* Desktop shows all HUD items; mobile shows only the simplified ones */
         .hud-mobile-only { display: none; }
         .hud-mobile-bottom { display: none; }
