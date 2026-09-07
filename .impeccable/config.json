@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "#ffffff",
+        "createdAt": "2026-09-07T13:47:31.996Z",
+        "reason": "DESIGN.md No-Pure Rule names the projector gate flash and film-leader flash frame as sanctioned diegetic exceptions; a gate flash is white by definition"
+      }
+    ]
+  }
+}
