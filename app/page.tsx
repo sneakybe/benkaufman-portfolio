@@ -1222,7 +1222,7 @@ export default function Home() {
               transition: "opacity 400ms ease",
             }}
           >
-            Selected work — 28 films
+            Selected work — 29 films
           </Link>
         </motion.div>
       </div>

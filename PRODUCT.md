@@ -27,14 +27,14 @@ The part a neighbouring producer could not truthfully copy: that international s
 ## Operating Context
 
 - Every commercial is hosted on Vimeo and plays in-page; the films are the content, and nothing should stand between a visitor and pressing play.
-- Visitors are film people judging film work. They read a grid of 28 commercials the way the industry reads a reel — by client, by craft, fast.
+- Visitors are film people judging film work. They read a grid of 29 commercials the way the industry reads a reel — by client, by craft, fast.
 - Evaluation is often comparative and happens alongside other producers' sites and reels.
 - The site is one artefact in a hiring conversation that continues over email.
 
 ## Capabilities and Constraints
 
 - Four routes: `/` (reel-led home), `/commercials`, `/photography`, `/about`.
-- Content is hardcoded in the source, not a CMS. The 28 commercials live as a typed array in [app/commercials/page.tsx](app/commercials/page.tsx); the 34 photographs live as an array in [app/photography/page.tsx](app/photography/page.tsx) with files under [public/photography/](public/photography/).
+- Content is hardcoded in the source, not a CMS. The 29 commercials live as a typed array in [app/commercials/page.tsx](app/commercials/page.tsx); the 34 photographs live as an array in [app/photography/page.tsx](app/photography/page.tsx) with files under [public/photography/](public/photography/).
 - Stack: Next.js 16 App Router, React 19, TypeScript, Tailwind v4, Framer Motion, `@vimeo/player`. Video delivery depends entirely on Vimeo embeds and their availability.
 - Target domain is benkaufman.co (declared in [app/layout.tsx](app/layout.tsx) metadata).
 - Undecided / not established: analytics, a CMS or any client-editable content path, additional pages, and whether the site should ever carry client logo marks or name the agencies and production companies behind each film. Do not introduce any of these without asking.
@@ -49,7 +49,7 @@ The part a neighbouring producer could not truthfully copy: that international s
 
 ## Evidence on Hand
 
-- 28 commercials with real client attributions and Vimeo IDs — Jet2, Women's Rugby World Cup, Allan Gray, Galderma, FedEx, Coventry Building Society, Chicken Licken, Dyson, John Lewis, Cadbury 5Star, Cell C, Vodacom, Supersport and others. **This set is fixed**: no project added, removed, reordered into a different claim, or re-attributed without Ben.
+- 29 commercials with real client attributions and Vimeo IDs — Asahi Super Dry, Jet2, Women's Rugby World Cup, Allan Gray, Galderma, FedEx, Coventry Building Society, Chicken Licken, Dyson, John Lewis, Cadbury 5Star, Cell C, Vodacom, Supersport and others. **This set is fixed**: no project added, removed, reordered into a different claim, or re-attributed without Ben.
 - 34 photographs in [public/photography/](public/photography/), shot across Scotland, South Africa, London, Thailand, Greece, Spain, Liberia, Zimbabwe and the US.
 - Headshot: [public/images/ben-kaufman.jpg](public/images/ben-kaufman.jpg).
 - Real credentials: exhibited at Cannes Lions; selected by British photographer Rankin.
@@ -59,7 +59,7 @@ The part a neighbouring producer could not truthfully copy: that international s
 ## Product Principles
 
 1. **The work outranks the interface.** Any element that delays or distracts from pressing play is a cost, and it has to earn its place against the film it sits in front of.
-2. **Credibility is shown, never claimed.** No superlatives, no "award-winning", no invented proof. The 28 films and the photographs are the argument.
+2. **Credibility is shown, never claimed.** No superlatives, no "award-winning", no invented proof. The 29 films and the photographs are the argument.
 3. **Judged by film people, against film people's sites.** The bar is what a prodco MD sees every week. Generic portfolio conventions read as amateur here.
 4. **Photography serves the producing.** It demonstrates the eye; it never reframes him as primarily a photographer.
 5. **Say less.** A producer's site earns trust by restraint — the industry reads over-explanation as inexperience.

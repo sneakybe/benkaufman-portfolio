@@ -12,6 +12,7 @@ interface Project {
 }
 
 const projects: Project[] = [
+  { title: "Director's Cut", client: "Asahi Super Dry", vimeoId: "1224623927" },
   { title: "Director's Cut", client: "Jet2", vimeoId: "1165178309" },
   { title: "Director's Cut", client: "Women's Rugby World Cup", vimeoId: "1030119809" },
   { title: "Father's Share", client: "Allan Gray", vimeoId: "269173359" },
